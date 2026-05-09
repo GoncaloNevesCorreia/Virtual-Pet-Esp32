@@ -1,0 +1,15 @@
+{
+	// AUTO SAVE
+	"editor.formatOnSave": true,
+	"files.autoSave": "afterDelay",
+	"files.autoSaveDelay": 2000,
+	"editor.suggestSelection": "first",
+
+	// FORMATTING
+	"editor.wordWrapColumn": 9999,
+	"files.eol": "\n",
+	"editor.tabSize": 2,
+	"editor.detectIndentation": false,
+	"editor.insertSpaces": true,
+	"diffEditor.ignoreTrimWhitespace": false
+}
