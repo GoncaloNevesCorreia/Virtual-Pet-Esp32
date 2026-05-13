@@ -5,6 +5,8 @@
 
 namespace Pet {
 
+void init();
+
 void render();
 
 }  // namespace Pet
