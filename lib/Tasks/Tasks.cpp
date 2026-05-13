@@ -29,15 +29,6 @@ void Tasks::update() {
     const unsigned long currentTime = millis();
 
     if (currentTime - block->currentTask->previousTime >= (unsigned long)block->delay) {
-      Serial.print("PreviousTime: ");
-      Serial.print(block->currentTask->previousTime);
-      Serial.print("; millis: ");
-      Serial.print(currentTime);
-      Serial.print("; Delay: ");
-      Serial.print(block->delay);
-      Serial.print("; Result: ");
-      Serial.println(currentTime - block->currentTask->previousTime);
-
       Task* currentTask = block->currentTask;
 
       block->delay = currentTask->delay;

@@ -2,6 +2,8 @@
 
 namespace Network {
 
+#define OFFLINE
+
 const char* ssid = "Wokwi-GUEST";
 const char* password = "";
 

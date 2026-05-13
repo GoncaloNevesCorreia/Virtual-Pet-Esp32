@@ -1,16 +1,16 @@
-#define DEBUG
+
 
 #include <Arduino.h>
 
+#include "Game/Game.h"
 #include "Network/Network.h"
-#include "Ui/Engine.h"
 
 void setup() {
   Serial.begin(115200);
 
   Network::init();
 
-  Engine::init();
+  Game::init();
 }
 
 void loop() {
@@ -21,5 +21,5 @@ void loop() {
 
   Network::loop();
 
-  Engine::RenderPet();
+  Game::loop();
 }
