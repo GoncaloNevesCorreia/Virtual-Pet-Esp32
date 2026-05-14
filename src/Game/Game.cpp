@@ -16,10 +16,6 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 const unsigned long FrameDelay = 1000 / FPS;
 unsigned long lastFrameTime = 0;
 
-// int currentFrame = 0;
-// unsigned long lastAnimationTime = 0;
-// int animationDelay = 500;  // Switch frame every 500ms
-
 void init() {
   // Wait for display
   delay(500);
@@ -29,6 +25,8 @@ void init() {
     Serial.println(F("SSD1306 allocation failed"));
     for (;;);  // Don't proceed, loop forever
   }
+
+  Pet::init();
 }
 
 void showFPS(unsigned long currentDelay) {
@@ -44,6 +42,12 @@ void showFPS(unsigned long currentDelay) {
   display.println(currentFPS);
 }
 
+void draw() {
+  Pet::render();
+
+  display.display();
+}
+
 void loop() {
   const unsigned long now = millis();
 
@@ -57,9 +61,7 @@ void loop() {
 
   showFPS(currentDelay);
 
-  Pet::render();
-
-  display.display();
+  draw();
 }
 
 }  // namespace Game
