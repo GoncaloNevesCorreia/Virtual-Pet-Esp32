@@ -16,6 +16,27 @@
 			"top": 89.54,
 			"left": 163.43,
 			"attrs": { "i2cAddress": "0x3c" }
+		},
+		{
+			"type": "wokwi-pushbutton",
+			"id": "btn1",
+			"top": 20,
+			"left": -150,
+			"attrs": { "color": "yellow", "label": "Pino 33" }
+		},
+		{
+			"type": "wokwi-pushbutton",
+			"id": "btn2",
+			"top": 80,
+			"left": -150,
+			"attrs": { "color": "green", "label": "Pino 32" }
+		},
+		{
+			"type": "wokwi-pushbutton",
+			"id": "btn3",
+			"top": 140,
+			"left": -150,
+			"attrs": { "color": "red", "label": "Pino 25" }
 		}
 	],
 	"connections": [
@@ -24,7 +45,13 @@
 		["oled1:VCC", "esp:3V3", "red", ["v-19.2", "h-67.05", "v79.52"]],
 		["oled1:GND", "esp:GND.1", "black", ["v-9.6", "h-48", "v60.32"]],
 		["oled1:SDA", "esp:D21", "green", ["v0"]],
-		["oled1:SCL", "esp:D22", "green", ["v0"]]
+		["oled1:SCL", "esp:D22", "green", ["v0"]],
+		["esp:D33", "btn1:1.r", "yellow", ["h-30"]],
+		["esp:GND.1", "btn1:2.r", "black", ["h-20"]],
+		["esp:D32", "btn2:1.r", "green", ["h-50"]],
+		["esp:GND.1", "btn2:2.r", "black", ["h-20"]],
+		["esp:D25", "btn3:1.r", "red", ["h-70"]],
+		["esp:GND.1", "btn3:2.r", "black", ["h-20"]]
 	],
 	"dependencies": {}
 }

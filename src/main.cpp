@@ -1,4 +1,4 @@
-
+#define DEBUG
 
 #include <Arduino.h>
 
@@ -16,7 +16,7 @@ void setup() {
 void loop() {
 #ifdef DEBUG
   // Slows down code to improve wokwi simulation
-  delay(1);
+  delay(500);
 #endif
 
   Network::loop();
