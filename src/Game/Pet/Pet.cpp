@@ -7,7 +7,7 @@ enum State {
   IDLE,
 };
 
-enum State currentState = State::DEAD;
+enum State currentState = State::IDLE;
 
 Animate petAnimation(&Game::display);
 

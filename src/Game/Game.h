@@ -8,6 +8,7 @@
 #include <Tasks.h>
 #include <Wire.h>
 
+#include "Game/Hunger/Hunger.h"
 #include "Game/Pet/Pet.h"
 
 namespace Game {

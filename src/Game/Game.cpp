@@ -27,6 +27,7 @@ void init() {
   }
 
   Pet::init();
+  Pet_Hunger::init();
 }
 
 void showFPS(unsigned long currentDelay) {
@@ -44,8 +45,7 @@ void showFPS(unsigned long currentDelay) {
 
 void draw() {
   Pet::render();
-
-  display.display();
+  Pet_Hunger::render();
 }
 
 void loop() {
@@ -62,6 +62,8 @@ void loop() {
   showFPS(currentDelay);
 
   draw();
+
+  display.display();
 }
 
 }  // namespace Game
