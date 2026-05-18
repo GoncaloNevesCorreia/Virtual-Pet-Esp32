@@ -38,8 +38,8 @@ void init() {
     for (;;);  // Para o código se o ecrã não for detetado
   }
 
-  display.clearDisplay();
-  display.display();
+  Pet::init();
+  Pet_Hunger::init();
 }
 
 void showFPS(unsigned long currentDelay) {
@@ -52,6 +52,11 @@ void showFPS(unsigned long currentDelay) {
   const int currentFPS = round((1000 - normalizedDelay) * ((float)FPS / 1000));
 
   display.println(currentFPS);
+}
+
+void draw() {
+  Pet::render();
+  Pet_Hunger::render();
 }
 
 void loop() {
@@ -76,8 +81,7 @@ void loop() {
   // Desenha os elementos na tela
   showFPS(currentDelay);
 
-  // Chama a renderização do Pet
-  Pet::render();
+  draw();
 
   display.display();
 }

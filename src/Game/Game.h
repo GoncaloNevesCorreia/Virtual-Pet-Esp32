@@ -7,7 +7,7 @@
 #include <SPI.h>
 #include <Wire.h>
 
-// Inclui a lógica do Pet
+#include "Game/Hunger/Hunger.h"
 #include "Game/Pet/Pet.h"
 
 namespace Game {

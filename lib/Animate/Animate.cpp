@@ -17,6 +17,8 @@ void Animate::draw() {
 
   _display->drawBitmap(_animation->x, _animation->y, _framePtr, _animation->width, _animation->height, 1);
 
+  if (_animation->length <= 1) return;
+
   const unsigned long now = millis();
 
   if (now - _lastFrameTime < _animation->delay) return;
