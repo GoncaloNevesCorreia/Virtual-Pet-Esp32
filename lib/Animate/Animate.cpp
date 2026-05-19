@@ -6,10 +6,11 @@ void Animate::updateFrame() {
 
 void Animate::set(const Animation* animation) {
   _animation = animation;
-  _lastFrameTime = 0;
+  _lastFrameTime = millis();
   _currentFrame = 0;
   _frameSize = _animation->width * _animation->height / 8;
   _framePtr = _animation->bitmap + (_currentFrame * _frameSize);
+  _onEndCallback = nullptr;
 }
 
 void Animate::draw() {
@@ -25,7 +26,16 @@ void Animate::draw() {
 
   _lastFrameTime = now;
 
+  if (_onEndCallback != nullptr && _currentFrame + 1 >= _animation->length) {
+    _onEndCallback();
+    return;
+  }
+
   _currentFrame = (_currentFrame + 1) % _animation->length;
 
   updateFrame();
+}
+
+void Animate::onEnd(OnAnimationEnd callback) {
+  _onEndCallback = callback;
 }
