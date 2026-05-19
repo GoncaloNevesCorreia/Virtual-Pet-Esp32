@@ -16,10 +16,9 @@ void increase() {
 
   if (hunger + 10 >= 100) {
     hunger = 100;
-    return;
+  } else {
+    hunger += 10;
   }
-
-  hunger += 10;
 }
 
 const unsigned long DECREASE_TIME = 1000;

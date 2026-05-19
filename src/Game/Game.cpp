@@ -29,9 +29,8 @@ void init() {
   }
 
   Pet::init();
-  Pet_Hunger::init();
 
-  btnFeed.onClick(Pet_Hunger::increase);
+  btnFeed.onClick(Pet::eat);
 }
 
 void showFPS(unsigned long currentDelay) {
@@ -48,7 +47,6 @@ void showFPS(unsigned long currentDelay) {
 
 void draw() {
   Pet::render();
-  Pet_Hunger::render();
 }
 
 void loop() {
