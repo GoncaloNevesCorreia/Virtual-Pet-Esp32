@@ -16,7 +16,7 @@ void setup() {
 void loop() {
 #ifdef DEBUG
   // Slows down code to improve wokwi simulation
-  delay(500);
+  delay(1);
 #endif
 
   Network::loop();
