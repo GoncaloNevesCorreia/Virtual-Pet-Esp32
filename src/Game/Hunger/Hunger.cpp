@@ -2,7 +2,7 @@
 
 namespace Pet_Hunger {
 
-const uint8_t LowHunger = 80;
+const uint8_t LowHunger = 50;
 uint8_t hunger = 100;
 
 const unsigned long DECREASE_TIME = 500;
@@ -17,8 +17,6 @@ void decrease() {
 }
 
 void increase() {
-  if (hunger == 0) return;
-
   if (hunger + 10 >= 100) {
     hunger = 100;
   } else {

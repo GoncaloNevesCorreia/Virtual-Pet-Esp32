@@ -9,6 +9,8 @@
 
 namespace Pet_Hunger {
 
+extern const uint8_t LowHunger;
+
 extern uint8_t hunger;
 
 void init();
