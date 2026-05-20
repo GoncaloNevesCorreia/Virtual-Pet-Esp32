@@ -4,10 +4,10 @@ namespace Network {
 
 #define OFFLINE
 
-const char* ssid = "Wokwi-GUEST";
-const char* password = "";
+const char* ssid = SECRET_SSID;
+const char* password = SECRET_PASS;
 
-const char* mqtt_server = "192.168.53.113";
+const char* mqtt_server = SECRET_MQTT;
 
 WiFiClient espClient;
 PubSubClient client(espClient);

@@ -3,6 +3,7 @@
 
 #include <PubSubClient.h>
 #include <WiFi.h>
+#include "secrets.h"
 
 namespace Network {
 
