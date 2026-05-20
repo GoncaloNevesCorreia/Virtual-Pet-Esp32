@@ -9,6 +9,8 @@
 
 namespace Pet_Hunger {
 
+extern uint8_t hunger;
+
 void init();
 
 void render();

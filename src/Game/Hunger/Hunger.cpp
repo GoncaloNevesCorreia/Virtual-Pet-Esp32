@@ -5,6 +5,11 @@ namespace Pet_Hunger {
 const uint8_t LowHunger = 80;
 uint8_t hunger = 100;
 
+const unsigned long DECREASE_TIME = 500;
+Timer hungerDecreaseTimer(decrease, DECREASE_TIME);
+
+Animate hungerAnimation(&Game::display);
+
 void decrease() {
   if (hunger == 0) return;
 
@@ -19,12 +24,9 @@ void increase() {
   } else {
     hunger += 10;
   }
+
+  hungerDecreaseTimer.reset();
 }
-
-const unsigned long DECREASE_TIME = 1000;
-Timer hungerDecreaseTimer(decrease, DECREASE_TIME);
-
-Animate hungerAnimation(&Game::display);
 
 void init() {
   // Init stat from EEPROM
@@ -35,7 +37,7 @@ void init() {
 void printValue() {
   Game::display.setTextSize(1);
   Game::display.setTextColor(SSD1306_WHITE);
-  Game::display.setCursor(108, 6);
+  Game::display.setCursor(108, 22);
   Game::display.print(hunger);
 }
 

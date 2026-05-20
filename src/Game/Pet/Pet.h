@@ -1,6 +1,7 @@
 #include <Animate.h>
 
 #include "Game/Game.h"
+#include "Game/Health/Health.h"
 #include "Game/Hunger/Hunger.h"
 #include "Game/Ui/States/Dead.h"
 #include "Game/Ui/States/Eating.h"

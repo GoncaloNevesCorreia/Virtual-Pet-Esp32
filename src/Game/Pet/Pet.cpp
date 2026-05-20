@@ -17,12 +17,14 @@ void init() {
   petAnimation.set(&Animation_Pet_Idle);
 
   Pet_Hunger::init();
+  Pet_Health::init();
 }
 
 void render() {
   petAnimation.draw();
 
   Pet_Hunger::render();
+  Pet_Health::render();
 }
 
 void updateAnimation() {
