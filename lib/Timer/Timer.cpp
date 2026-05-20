@@ -15,3 +15,9 @@ void Timer::run() {
 void Timer::reset() {
   _lastTime = millis();
 }
+
+void Timer::setInterval(uint16_t interval) {
+  _interval = interval;
+
+  reset();
+}

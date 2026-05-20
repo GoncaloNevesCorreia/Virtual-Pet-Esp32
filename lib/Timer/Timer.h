@@ -8,7 +8,7 @@ typedef void (*Callback)();
 class Timer {
  private:
   unsigned long _lastTime = 0;
-  const uint16_t _interval;
+  uint16_t _interval;
   Callback _callback;
 
  public:
@@ -17,6 +17,8 @@ class Timer {
   void run();
 
   void reset();
+
+  void setInterval(uint16_t interval);
 };
 
 #endif
