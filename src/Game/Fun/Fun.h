@@ -8,10 +8,11 @@
 #include "Game/Ui/Stats/Fun.h"
 
 namespace Pet_Fun {
+extern const unsigned long INCREASE_AMOUNT;
 
 extern const uint8_t LowFun;
 
-extern uint8_t hunger;
+extern uint8_t fun;
 
 void init();
 

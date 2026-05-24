@@ -34,6 +34,15 @@ void decrease() {
   hunger -= DECREASE_AMOUNT;
 }
 
+void decreaseAmount(unsigned long amount) {
+  if (hunger <= amount) {
+    hunger = 0;
+    return;
+  }
+
+  hunger -= amount;
+}
+
 void printValue() {
   Game::display.setTextSize(1);
   Game::display.setTextColor(SSD1306_WHITE);

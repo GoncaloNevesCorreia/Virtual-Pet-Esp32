@@ -21,6 +21,8 @@ void increase();
 
 void decrease();
 
+void decreaseAmount(unsigned long amount);
+
 void save();
 
 }  // namespace Pet_Energy

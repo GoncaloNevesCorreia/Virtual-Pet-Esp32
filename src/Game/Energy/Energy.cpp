@@ -35,6 +35,15 @@ void decrease() {
   energy -= DECREASE_AMOUNT;
 }
 
+void decreaseAmount(unsigned long amount) {
+  if (energy <= amount) {
+    energy = 0;
+    return;
+  }
+
+  energy -= amount;
+}
+
 void setIconAnimation() {
   static bool blinking = false;
 

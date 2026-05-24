@@ -147,6 +147,8 @@ void eat() {
 
 void playEnd() {
   Pet_Fun::increase();
+  Pet_Energy::decreaseAmount(Pet_Fun::INCREASE_AMOUNT);
+  Pet_Hunger::decreaseAmount(Pet_Fun::INCREASE_AMOUNT);
 
   refreshState();
 }
