@@ -5,8 +5,8 @@ namespace Pet {
 enum State {
   HAPPY,  // TODO
   IDLE,
-  SAD,      // TODO
-  PLAYING,  // TODO
+  SAD,  // TODO
+  PLAYING,
 
   HUNGRY,  // TODO
   EATING,
