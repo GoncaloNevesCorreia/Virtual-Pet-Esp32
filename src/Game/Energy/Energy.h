@@ -6,6 +6,7 @@
 #include <Timer.h>
 
 #include "Game/Game.h"
+#include "Game/Ui/Stats/Energy.h"
 
 namespace Pet_Energy {
 

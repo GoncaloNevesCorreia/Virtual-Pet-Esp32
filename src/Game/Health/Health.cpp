@@ -12,6 +12,8 @@ const unsigned long BASE_RECOVER_SPEED = 2000;
 Timer healthDecreaseTimer(decrease, BASE_DECAY_SPEED);
 Timer healthRecoverTimer(increase, BASE_RECOVER_SPEED);
 
+Animate healthAnimation(&Game::display);
+
 void increase() {
   if (health == 0) return;
 
@@ -42,6 +44,21 @@ uint8_t getDecayModifier() {
   return modifier;
 }
 
+void setAnimation() {
+  static bool blinking = false;
+
+  if (losingHealth && !blinking) {
+    blinking = true;
+    healthAnimation.set(&Animation_Health_Blink);
+    return;
+  }
+
+  if (!losingHealth && blinking) {
+    blinking = false;
+    healthAnimation.set(&Animation_Health);
+  }
+}
+
 void printValue() {
   Game::display.setTextSize(1);
   Game::display.setTextColor(SSD1306_WHITE);
@@ -50,13 +67,11 @@ void printValue() {
 }
 
 void handle() {
-  static uint8_t previousModifier = 0;
-
   const uint8_t modifier = getDecayModifier();
 
   if (modifier == 0) {
-    if (modifier != previousModifier) {
-      previousModifier = 0;
+    if (losingHealth) {
+      losingHealth = false;
 
       healthRecoverTimer.reset();
     }
@@ -65,9 +80,8 @@ void handle() {
     return;
   }
 
-  if (modifier != previousModifier) {
-    previousModifier = modifier;
-
+  if (!losingHealth) {
+    losingHealth = true;
     healthDecreaseTimer.setInterval(BASE_DECAY_SPEED - (200 * modifier));
   }
 
@@ -75,12 +89,17 @@ void handle() {
 }
 
 void init() {
+  healthAnimation.set(&Animation_Health);
 }
 
 void render() {
   handle();
 
+  setAnimation();
+
   printValue();
+
+  healthAnimation.draw();
 }
 
 }  // namespace Pet_Health

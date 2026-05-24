@@ -28,6 +28,7 @@ void increase() {
 }
 
 void init() {
+  energyAnimation.set(&Animation_Energy);
 }
 
 void printValue() {
@@ -44,13 +45,13 @@ void setAnimation() {
 
   if (energy <= LowEnergy && !blinking) {
     blinking = true;
-    // energyAnimation.set(&Animation_Energy_Blink);
+    energyAnimation.set(&Animation_Energy_Blink);
     return;
   }
 
   if ((energy > LowEnergy) && blinking) {
     blinking = false;
-    // energyAnimation.set(&Animation_Energy);
+    energyAnimation.set(&Animation_Energy);
   }
 }
 
@@ -92,6 +93,8 @@ void render() {
 
   setAnimation();
   printValue();
+
+  energyAnimation.draw();
 }
 
 }  // namespace Pet_Energy

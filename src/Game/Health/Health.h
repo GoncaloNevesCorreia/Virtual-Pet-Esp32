@@ -5,6 +5,7 @@
 #include <Timer.h>
 
 #include "Game/Game.h"
+#include "Game/Ui/Stats/Health.h"
 
 namespace Pet_Health {
 
