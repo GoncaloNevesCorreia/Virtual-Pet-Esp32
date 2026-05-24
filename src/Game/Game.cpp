@@ -76,15 +76,7 @@ void loop() {
 }
 
 void save() {
-  static uint8_t counter = 0;
-
   Pet_Hunger::save();
-
-  counter++;
-
-  if (counter > 3) {
-    ESP.restart();
-  }
 }
 
 }  // namespace Game
