@@ -45,10 +45,12 @@ void showFPS(unsigned long currentDelay) {
   display.setCursor(48, 4);
   display.print(F("FPS:"));
 
-  const unsigned long normalizedDelay = constrain((currentDelay - FrameDelay), 0, 1000);
-  const int currentFPS = round((1000 - normalizedDelay) * ((float)FPS / 1000));
-
-  display.println(currentFPS);
+  if (currentDelay > 0) {
+    const int currentFPS = round(1000 / (float)currentDelay);
+    display.println(currentFPS);
+  } else {
+    display.println(0);
+  }
 }
 
 void draw() {
