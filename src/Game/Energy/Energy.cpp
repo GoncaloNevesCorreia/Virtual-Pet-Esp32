@@ -1,30 +1,16 @@
 #include "Energy.h"
 
-#include <Arduino.h>
-
-#include "../Hunger/Hunger.h"  // Necessário para verificar o nível de fome do pet
-
 namespace Pet_Energy {
 
-// Energia <= 15 equivale ao "sono entre 85 e 100"
 const uint8_t LowEnergy = 15;
+
 uint8_t energy = 100;
-bool isSleeping = false;
 
-const int BUTTON_SLEEP_PIN = 6;
+const unsigned long BASE_DECAY_SPEED = 500;
+const unsigned long BASE_RECOVER_SPEED = 500;
 
-const unsigned long TICK_TIME = 1000;  // Altera a energia a cada 1 segundo
-
-// Função intermédia para o Timer: a energia desce quando acordado e sobe quando dorme
-void updateEnergyTick() {
-  if (isSleeping) {
-    increase();
-  } else {
-    decrease();
-  }
-}
-
-Timer energyTimer(updateEnergyTick, TICK_TIME);
+Timer energyDecreaseTimer(decrease, BASE_DECAY_SPEED);
+Timer energyRecoverTimer(increase, BASE_RECOVER_SPEED);
 
 Animate energyAnimation(&Game::display);
 
@@ -34,87 +20,78 @@ void decrease() {
 }
 
 void increase() {
-  // A recuperar a energia. Usa saltos de +5 para recuperar mais rápido a dormir
-  if (energy + 5 >= 100) {
+  if (energy + 1 >= 100) {
     energy = 100;
-    wakeUp();  // Acorda automaticamente se a energia estiver totalmente recuperada
   } else {
-    energy += 5;
+    energy += 1;
   }
 }
 
-void sleep() {
-  isSleeping = true;
-}
-
-void wakeUp() {
-  isSleeping = false;
-}
-
 void init() {
-  // Configurar o pino do botão como entrada (assume INPUT_PULLUP, LOW = pressionado)
-  pinMode(BUTTON_SLEEP_PIN, INPUT_PULLUP);
-
-  // energyAnimation.set(&Animation_Energy); // Descomentar quando existirem assets
 }
 
 void printValue() {
   Game::display.setTextSize(1);
   Game::display.setTextColor(SSD1306_WHITE);
-  // Posição ajustada (Y=10) para não sobrepor o texto da Fome que está no Y=22
-  Game::display.setCursor(108, 10);
+
+  Game::display.setCursor(108, 38);
   Game::display.print(energy);
 }
 
+// TODO: Adicionar icon de energia
 void setAnimation() {
   static bool blinking = false;
 
-  // Pisca quando tem muito sono e não está a dormir
-  if (energy <= LowEnergy && !blinking && !isSleeping) {
+  if (energy <= LowEnergy && !blinking) {
     blinking = true;
     // energyAnimation.set(&Animation_Energy_Blink);
     return;
   }
 
-  // Pára de piscar se estiver a dormir ou se já não tiver sono
-  if ((energy > LowEnergy || isSleeping) && blinking) {
+  if ((energy > LowEnergy) && blinking) {
     blinking = false;
     // energyAnimation.set(&Animation_Energy);
   }
 }
 
 void handleSleepLogic() {
-  // Lê o estado do botão
-  bool buttonPressed = (digitalRead(BUTTON_SLEEP_PIN) == LOW);
+  static bool wasSleeping = false;
 
-  if (isSleeping) {
-    // 1. Se começar a ficar com fome, acorda automaticamente
-    if (Pet_Hunger::hunger < Pet_Hunger::LowHunger) {
-      wakeUp();
+  if (Pet::isSleeping()) {
+    if (!wasSleeping) {
+      wasSleeping = true;
+
+      energyRecoverTimer.reset();
     }
-    // 2. Se carregar no botão enquanto dorme, acorda
-    else if (buttonPressed) {
-      wakeUp();
-      delay(200);  // Debounce rápido para evitar duplos cliques no botão
+
+    if (energy == 100 || Pet::isHungry()) {
+      Pet::toggleSleep();
+    } else {
+      energyRecoverTimer.run();
     }
-  } else {
-    // 3. Se estiver com sono (energia baixa) e carregar no botão, dorme
-    if (energy <= LowEnergy && buttonPressed) {
-      sleep();
-      delay(200);  // Debounce
-    }
+
+    return;
   }
+
+  if (wasSleeping) {
+    wasSleeping = false;
+
+    energyDecreaseTimer.reset();
+  }
+
+  if (energy == 0) {
+    Pet::toggleSleep();
+    return;
+  }
+
+  energyDecreaseTimer.run();
 }
 
 void render() {
-  energyTimer.run();
-
-  handleSleepLogic();  // Verifica inputs e regras de estado
+  handleSleepLogic();
 
   setAnimation();
   printValue();
-
-  // energyAnimation.draw(); // Descomentar quando existirem as sprites
 }
 
 }  // namespace Pet_Energy
