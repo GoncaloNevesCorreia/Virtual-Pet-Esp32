@@ -17,6 +17,7 @@ unsigned long lastFrameTime = 0;
 
 // Configuração dos Pinos dos Botões
 Button btnFeed(4);
+Button btnPlay(5);
 Button btnSleep(6);
 
 Timer autoSaveTimer(save, 10000);
@@ -34,6 +35,7 @@ void init() {
   Pet::init();
 
   btnFeed.onClick(Pet::eat);
+  btnPlay.onClick(Pet::play);
   btnSleep.onClick(Pet::toggleSleep);
 }
 
@@ -58,6 +60,7 @@ void loop() {
   const unsigned long currentDelay = now - lastFrameTime;
 
   btnFeed.read();
+  btnPlay.read();
   btnSleep.read();
 
   if (currentDelay < FrameDelay) return;

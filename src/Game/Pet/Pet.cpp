@@ -29,6 +29,7 @@ void init() {
   Pet_Hunger::init();
   Pet_Health::init();
   Pet_Energy::init();
+  Pet_Fun::init();
 }
 
 bool canInteract() {
@@ -76,6 +77,9 @@ void updateAnimation() {
     case State::WAKING_UP:
       petAnimation.set(&Animation_Pet_Waking_Up);
       break;
+    case State::PLAYING:
+      petAnimation.set(&Animation_Pet_Playing);
+      break;
     default:
       petAnimation.set(&Animation_Pet_Idle);
       break;
@@ -117,6 +121,7 @@ void render() {
   Pet_Hunger::render();
   Pet_Health::render();
   Pet_Energy::render();
+  Pet_Fun::render();
 }
 
 void eatEnd() {
@@ -138,6 +143,27 @@ void eat() {
   setState(State::EATING);
 
   petAnimation.onEnd(eatEnd);
+}
+
+void playEnd() {
+  Pet_Fun::increase();
+
+  refreshState();
+}
+
+void play() {
+  if (!canInteract()) return;
+
+  if (currentState == State::SLEEPING) {
+    setState(State::WAKING_UP);
+
+    petAnimation.onEnd(play);
+    return;
+  }
+
+  setState(State::PLAYING);
+
+  petAnimation.onEnd(playEnd);
 }
 
 void toggleSleep() {
