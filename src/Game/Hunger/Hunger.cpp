@@ -5,7 +5,7 @@ namespace Pet_Hunger {
 const uint8_t LowHunger = 50;
 uint8_t hunger = 100;
 
-const unsigned long DECREASE_TIME = 500;
+const unsigned long DECREASE_TIME = 1000;
 Timer hungerDecreaseTimer(decrease, DECREASE_TIME);
 
 Animate hungerAnimation(&Game::display);
@@ -54,12 +54,28 @@ void setAnimation() {
   }
 }
 
+void handle() {
+  static bool wasSleeping = false;
+
+  if (Pet::isSleeping()) {
+    if (!wasSleeping) {
+      wasSleeping = true;
+
+      hungerDecreaseTimer.setInterval(DECREASE_TIME * 3);
+    }
+  } else if (wasSleeping) {
+    wasSleeping = false;
+    hungerDecreaseTimer.setInterval(DECREASE_TIME);
+  }
+
+  hungerDecreaseTimer.run();
+}
+
 void render() {
   // Render UI
   // Update stat if needed
 
-  hungerDecreaseTimer.run();
-
+  handle();
   setAnimation();
 
   printValue();

@@ -17,6 +17,7 @@ unsigned long lastFrameTime = 0;
 
 // Configuração dos Pinos dos Botões
 Button btnFeed(4);
+Button btnSleep(6);
 
 void init() {
   // Wait for display
@@ -31,6 +32,7 @@ void init() {
   Pet::init();
 
   btnFeed.onClick(Pet::eat);
+  btnSleep.onClick(Pet::toggleSleep);
 }
 
 void showFPS(unsigned long currentDelay) {
@@ -54,6 +56,7 @@ void loop() {
   const unsigned long currentDelay = now - lastFrameTime;
 
   btnFeed.read();
+  btnSleep.read();
 
   if (currentDelay < FrameDelay) return;
 

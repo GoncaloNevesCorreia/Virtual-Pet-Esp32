@@ -1,17 +1,24 @@
 #include "Game/Pet/Pet.h"
 
-#include "../Energy/Energy.h"  // Incluir o sistema de energia
-
 namespace Pet {
 
 enum State {
-  DEAD,
-  EATING,
-  SLEEPING,  // Novo estado adicionado
+  HAPPY,  // TODO
   IDLE,
+  SAD,      // TODO
+  PLAYING,  // TODO
+
+  HUNGRY,  // TODO
+  EATING,
+
+  TIRED,  // TODO
+  FALLING_ASLEEP,
+  SLEEPING,
+  WAKING_UP,
+
+  DEAD,
 };
 
-enum State previousState = State::IDLE;
 enum State currentState = State::IDLE;
 
 Animate petAnimation(&Game::display);
@@ -21,7 +28,35 @@ void init() {
 
   Pet_Hunger::init();
   Pet_Health::init();
-  Pet_Energy::init();  // Inicializar a Energia
+  Pet_Energy::init();
+}
+
+bool canInteract() {
+  if (currentState == State::EATING) {
+    return false;
+  }
+
+  if (currentState == State::FALLING_ASLEEP) {
+    return false;
+  }
+
+  if (currentState == State::PLAYING) {
+    return false;
+  }
+
+  return true;
+}
+
+bool isHungry() {
+  return Pet_Hunger::hunger < Pet_Hunger::LowHunger;
+}
+
+bool isTired() {
+  return Pet_Energy::energy < Pet_Energy::LowEnergy;
+}
+
+bool isSleeping() {
+  return currentState == State::SLEEPING;
 }
 
 void updateAnimation() {
@@ -32,8 +67,14 @@ void updateAnimation() {
     case State::EATING:
       petAnimation.set(&Animation_Pet_Eating);
       break;
+    case State::FALLING_ASLEEP:
+      petAnimation.set(&Animation_Pet_Falling_Asleep);
+      break;
     case State::SLEEPING:
-      // petAnimation.set(&Animation_Pet_Sleeping); // Descomentar quando tiveres esta animação
+      petAnimation.set(&Animation_Pet_Sleeping);
+      break;
+    case State::WAKING_UP:
+      petAnimation.set(&Animation_Pet_Waking_Up);
       break;
     default:
       petAnimation.set(&Animation_Pet_Idle);
@@ -42,53 +83,75 @@ void updateAnimation() {
 }
 
 void setState(enum State state) {
-  previousState = currentState;
   currentState = state;
 
   updateAnimation();
 }
 
-void revertState() {
-  currentState = previousState;
-
-  updateAnimation();
+enum State getState() {
+  return currentState;
 }
 
-// Função para sincronizar a variável isSleeping com a máquina de estados do Pet
-void handleSleepState() {
-  // Se o botão mandou dormir, e o Pet ainda não está no estado SLEEPING
-  if (Pet_Energy::isSleeping && currentState != State::SLEEPING) {
+void refreshState() {
+  if (currentState == State::FALLING_ASLEEP) {
     setState(State::SLEEPING);
+    return;
   }
-  // Se o botão (ou a fome/energia cheia) mandou acordar, e o Pet ainda está a dormir
-  else if (!Pet_Energy::isSleeping && currentState == State::SLEEPING) {
-    setState(State::IDLE);  // Acorda e volta a ficar IDLE
+
+  if (isHungry()) {
+    setState(State::HUNGRY);
+    return;
   }
+
+  if (isTired()) {
+    setState(State::TIRED);
+    return;
+  }
+
+  setState(State::IDLE);
 }
 
 void render() {
-  handleSleepState();  // Verifica se deve adormecer/acordar antes de desenhar
-
   petAnimation.draw();
 
   Pet_Hunger::render();
   Pet_Health::render();
-  Pet_Energy::render();  // Renderizar a UI e Timer da Energia
+  Pet_Energy::render();
 }
 
 void eatEnd() {
   Pet_Hunger::increase();
 
-  revertState();
+  refreshState();
 }
 
 void eat() {
-  // Se já estiver a comer, ou se estiver a dormir, não faz nada
-  if (currentState == State::EATING || currentState == State::SLEEPING) return;
+  if (!canInteract()) return;
+
+  if (currentState == State::SLEEPING) {
+    setState(State::WAKING_UP);
+
+    petAnimation.onEnd(eat);
+    return;
+  }
 
   setState(State::EATING);
 
   petAnimation.onEnd(eatEnd);
+}
+
+void toggleSleep() {
+  if (!canInteract()) return;
+
+  if (currentState == State::SLEEPING) {
+    setState(State::WAKING_UP);
+  } else {
+    if (currentState == State::HUNGRY) return;
+
+    setState(State::FALLING_ASLEEP);
+  }
+
+  petAnimation.onEnd(refreshState);
 }
 
 }  // namespace Pet
