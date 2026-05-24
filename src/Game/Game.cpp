@@ -79,6 +79,9 @@ void loop() {
 }
 
 void save() {
+  Pet_Energy::save();
+  Pet_Fun::save();
+  Pet_Health::save();
   Pet_Hunger::save();
 }
 
