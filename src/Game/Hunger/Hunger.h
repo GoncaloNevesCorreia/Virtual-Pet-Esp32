@@ -21,6 +21,8 @@ void increase();
 
 void decrease();
 
+void save();
+
 }  // namespace Pet_Hunger
 
 #endif

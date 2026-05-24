@@ -19,6 +19,8 @@ unsigned long lastFrameTime = 0;
 Button btnFeed(4);
 Button btnSleep(6);
 
+Timer autoSaveTimer(save, 10000);
+
 void init() {
   // Wait for display
   delay(500);
@@ -69,6 +71,20 @@ void loop() {
   draw();
 
   display.display();
+
+  autoSaveTimer.run();
+}
+
+void save() {
+  static uint8_t counter = 0;
+
+  Pet_Hunger::save();
+
+  counter++;
+
+  if (counter > 3) {
+    ESP.restart();
+  }
 }
 
 }  // namespace Game

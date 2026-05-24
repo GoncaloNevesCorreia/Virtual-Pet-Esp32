@@ -9,6 +9,7 @@
 #include <Wire.h>
 
 #include "Game/Pet/Pet.h"
+#include "Storage/Storage.h"
 
 namespace Game {
 
@@ -18,6 +19,8 @@ extern Adafruit_SSD1306 display;
 // Funções principais do motor do jogo
 void init();
 void loop();
+
+void save();
 
 }  // namespace Game
 

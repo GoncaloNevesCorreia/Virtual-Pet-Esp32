@@ -1,12 +1,16 @@
 #define DEBUG
 
 #include <Arduino.h>
+#include <Preferences.h>
 
 #include "Game/Game.h"
 #include "Network/Network.h"
+#include "Storage/Storage.h"
 
 void setup() {
   Serial.begin(115200);
+
+  Storage::init();
 
   Network::init();
 

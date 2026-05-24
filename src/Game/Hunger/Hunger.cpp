@@ -2,6 +2,8 @@
 
 namespace Pet_Hunger {
 
+#define STORAGE_KEY "pet_hunger"
+
 const uint8_t LowHunger = 50;
 uint8_t hunger = 100;
 
@@ -28,6 +30,8 @@ void increase() {
 
 void init() {
   // Init stat from EEPROM
+
+  hunger = Storage::load(STORAGE_KEY);
 
   hungerAnimation.set(&Animation_Hunger);
 }
@@ -81,6 +85,10 @@ void render() {
   printValue();
 
   hungerAnimation.draw();
+}
+
+void save() {
+  Storage::save(STORAGE_KEY, hunger);
 }
 
 }  // namespace Pet_Hunger
