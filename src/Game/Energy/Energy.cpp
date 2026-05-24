@@ -1,58 +1,68 @@
 #include "Energy.h"
 
 namespace Pet_Energy {
+const unsigned long INCREASE_AMOUNT = 1;
+const unsigned long DECREASE_AMOUNT = 1;
+
+const unsigned long BASE_DECAY_SPEED = 5000;
+const unsigned long BASE_RECOVER_SPEED = 500;
+
+#define STORAGE_KEY "PET_ENERGY"
 
 const uint8_t LowEnergy = 15;
 
 uint8_t energy = 100;
 
-const unsigned long BASE_DECAY_SPEED = 500;
-const unsigned long BASE_RECOVER_SPEED = 500;
-
 Timer energyDecreaseTimer(decrease, BASE_DECAY_SPEED);
 Timer energyRecoverTimer(increase, BASE_RECOVER_SPEED);
 
-Animate energyAnimation(&Game::display);
-
-void decrease() {
-  if (energy == 0) return;
-  energy -= 1;
-}
+Animate energyIcon(&Game::display);
 
 void increase() {
-  if (energy + 1 >= 100) {
+  if (energy + INCREASE_AMOUNT >= 100) {
     energy = 100;
   } else {
-    energy += 1;
+    energy += INCREASE_AMOUNT;
   }
 }
 
-void init() {
-  energyAnimation.set(&Animation_Energy);
+void decrease() {
+  if (energy <= DECREASE_AMOUNT) {
+    energy = 0;
+    return;
+  }
+
+  energy -= DECREASE_AMOUNT;
+}
+
+void setIconAnimation() {
+  static bool blinking = false;
+
+  if (energy <= LowEnergy && !blinking) {
+    blinking = true;
+    energyIcon.set(&Animation_Energy_Blink);
+    return;
+  }
+
+  if ((energy > LowEnergy) && blinking) {
+    blinking = false;
+    energyIcon.set(&Animation_Energy);
+  }
 }
 
 void printValue() {
   Game::display.setTextSize(1);
   Game::display.setTextColor(SSD1306_WHITE);
 
-  Game::display.setCursor(108, 38);
+  if (energy < 10) {
+    Game::display.setCursor(107, 4);
+  } else if (energy < 100) {
+    Game::display.setCursor(101, 4);
+  } else {
+    Game::display.setCursor(95, 4);
+  }
+
   Game::display.print(energy);
-}
-
-// TODO: Adicionar icon de energia
-void setAnimation() {
-  static bool blinking = false;
-
-  if (energy <= LowEnergy && !blinking) {
-    blinking = true;
-    energyAnimation.set(&Animation_Energy_Blink);
-    return;
-  }
-
-  if ((energy > LowEnergy) && blinking) {
-    blinking = false;
-    energyAnimation.set(&Animation_Energy);
-  }
 }
 
 void handleSleepLogic() {
@@ -88,13 +98,24 @@ void handleSleepLogic() {
   energyDecreaseTimer.run();
 }
 
+void init() {
+  energy = Storage::load(STORAGE_KEY);
+
+  energyIcon.set(&Animation_Energy);
+}
+
 void render() {
   handleSleepLogic();
 
-  setAnimation();
+  setIconAnimation();
+
   printValue();
 
-  energyAnimation.draw();
+  energyIcon.draw();
+}
+
+void save() {
+  Storage::save(STORAGE_KEY, energy);
 }
 
 }  // namespace Pet_Energy

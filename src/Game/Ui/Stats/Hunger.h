@@ -16,8 +16,8 @@ static const uint8_t _bitmap_hunger_blink[2][32] PROGMEM = {
      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}};
 
 const Animation Animation_Hunger PROGMEM = {
-    .x = 92,
-    .y = 16,
+    .x = 113,
+    .y = 47,
     .width = 16,
     .height = 16,
     .length = 1,
@@ -26,8 +26,8 @@ const Animation Animation_Hunger PROGMEM = {
 };
 
 const Animation Animation_Hunger_Blink PROGMEM = {
-    .x = 92,
-    .y = 16,
+    .x = 113,
+    .y = 47,
     .width = 16,
     .height = 16,
     .length = 2,

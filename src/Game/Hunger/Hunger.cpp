@@ -1,90 +1,100 @@
 #include "Hunger.h"
 
 namespace Pet_Hunger {
+const unsigned long INCREASE_AMOUNT = 10;
+const unsigned long DECREASE_AMOUNT = 1;
 
-#define STORAGE_KEY "pet_hunger"
+const unsigned long BASE_DECAY_SPEED = 500;
 
-const uint8_t LowHunger = 50;
+#define STORAGE_KEY "PET_HUNGER"
+
+const uint8_t LowHunger = 15;
 uint8_t hunger = 100;
 
-const unsigned long DECREASE_TIME = 1000;
-Timer hungerDecreaseTimer(decrease, DECREASE_TIME);
+Timer hungerDecreaseTimer(decrease, BASE_DECAY_SPEED);
 
-Animate hungerAnimation(&Game::display);
-
-void decrease() {
-  if (hunger == 0) return;
-
-  hunger -= 1;
-}
+Animate hungerIcon(&Game::display);
 
 void increase() {
-  if (hunger + 10 >= 100) {
+  if (hunger + INCREASE_AMOUNT >= 100) {
     hunger = 100;
   } else {
-    hunger += 10;
+    hunger += INCREASE_AMOUNT;
   }
 
   hungerDecreaseTimer.reset();
 }
 
-void init() {
-  // Init stat from EEPROM
+void decrease() {
+  if (hunger <= DECREASE_AMOUNT) {
+    hunger = 0;
+    return;
+  }
 
-  hunger = Storage::load(STORAGE_KEY);
-
-  hungerAnimation.set(&Animation_Hunger);
+  hunger -= DECREASE_AMOUNT;
 }
 
 void printValue() {
   Game::display.setTextSize(1);
   Game::display.setTextColor(SSD1306_WHITE);
-  Game::display.setCursor(108, 22);
+
+  if (hunger < 10) {
+    Game::display.setCursor(107, 54);
+  } else if (hunger < 100) {
+    Game::display.setCursor(101, 54);
+  } else {
+    Game::display.setCursor(95, 54);
+  }
+
   Game::display.print(hunger);
 }
 
-void setAnimation() {
+void setIconAnimation() {
   static bool blinking = false;
 
   if (hunger < LowHunger && !blinking) {
     blinking = true;
-    hungerAnimation.set(&Animation_Hunger_Blink);
+    hungerIcon.set(&Animation_Hunger_Blink);
     return;
   }
 
   if (hunger >= LowHunger && blinking) {
     blinking = false;
-    hungerAnimation.set(&Animation_Hunger);
+    hungerIcon.set(&Animation_Hunger);
   }
 }
 
-void handle() {
+void handleHungerLogic() {
   static bool wasSleeping = false;
 
   if (Pet::isSleeping()) {
     if (!wasSleeping) {
       wasSleeping = true;
 
-      hungerDecreaseTimer.setInterval(DECREASE_TIME * 3);
+      hungerDecreaseTimer.setInterval(BASE_DECAY_SPEED * 3);
     }
   } else if (wasSleeping) {
     wasSleeping = false;
-    hungerDecreaseTimer.setInterval(DECREASE_TIME);
+    hungerDecreaseTimer.setInterval(BASE_DECAY_SPEED);
   }
 
   hungerDecreaseTimer.run();
 }
 
-void render() {
-  // Render UI
-  // Update stat if needed
+void init() {
+  hunger = Storage::load(STORAGE_KEY);
 
-  handle();
-  setAnimation();
+  hungerIcon.set(&Animation_Hunger);
+}
+
+void render() {
+  handleHungerLogic();
+
+  setIconAnimation();
 
   printValue();
 
-  hungerAnimation.draw();
+  hungerIcon.draw();
 }
 
 void save() {

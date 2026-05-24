@@ -42,8 +42,8 @@ void init() {
 void showFPS(unsigned long currentDelay) {
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0, 0);
-  display.print(F("FPS: "));
+  display.setCursor(48, 4);
+  display.print(F("FPS:"));
 
   const unsigned long normalizedDelay = constrain((currentDelay - FrameDelay), 0, 1000);
   const int currentFPS = round((1000 - normalizedDelay) * ((float)FPS / 1000));

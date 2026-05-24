@@ -16,8 +16,8 @@ static const uint8_t _bitmap_health_blink[2][32] PROGMEM = {
      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}};
 
 const Animation Animation_Health PROGMEM = {
-    .x = 92,
-    .y = 0,
+    .x = 0,
+    .y = 1,
     .width = 16,
     .height = 16,
     .length = 1,
@@ -26,8 +26,8 @@ const Animation Animation_Health PROGMEM = {
 };
 
 const Animation Animation_Health_Blink PROGMEM = {
-    .x = 92,
-    .y = 0,
+    .x = 0,
+    .y = 1,
     .width = 16,
     .height = 16,
     .length = 2,

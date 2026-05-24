@@ -16,8 +16,8 @@ static const uint8_t _bitmap_energy_blink[2][32] PROGMEM = {
      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}};
 
 const Animation Animation_Energy PROGMEM = {
-    .x = 92,
-    .y = 32,
+    .x = 111,
+    .y = 0,
     .width = 16,
     .height = 16,
     .length = 1,
@@ -26,8 +26,8 @@ const Animation Animation_Energy PROGMEM = {
 };
 
 const Animation Animation_Energy_Blink PROGMEM = {
-    .x = 92,
-    .y = 32,
+    .x = 111,
+    .y = 0,
     .width = 16,
     .height = 16,
     .length = 2,

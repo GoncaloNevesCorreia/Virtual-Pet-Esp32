@@ -26,10 +26,10 @@ Animate petAnimation(&Game::display);
 void init() {
   petAnimation.set(&Animation_Pet_Idle);
 
-  Pet_Hunger::init();
-  Pet_Health::init();
   Pet_Energy::init();
   Pet_Fun::init();
+  Pet_Health::init();
+  Pet_Hunger::init();
 }
 
 bool canInteract() {
@@ -118,10 +118,10 @@ void refreshState() {
 void render() {
   petAnimation.draw();
 
-  Pet_Hunger::render();
-  Pet_Health::render();
   Pet_Energy::render();
   Pet_Fun::render();
+  Pet_Health::render();
+  Pet_Hunger::render();
 }
 
 void eatEnd() {

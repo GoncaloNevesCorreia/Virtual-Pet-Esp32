@@ -1,90 +1,92 @@
 #include "Fun.h"
 
 namespace Pet_Fun {
+const unsigned long INCREASE_AMOUNT = 10;
+const unsigned long DECREASE_AMOUNT = 1;
 
-#define STORAGE_KEY "pet_fun"
+const unsigned long BASE_DECAY_SPEED = 5000;
+
+#define STORAGE_KEY "PET_FUN"
 
 const uint8_t LowFun = 80;
 uint8_t fun = 100;
 
-const unsigned long DECREASE_TIME = 1000;
-Timer funDecreaseTimer(decrease, DECREASE_TIME);
+Timer funDecreaseTimer(decrease, BASE_DECAY_SPEED);
 
-Animate funAnimation(&Game::display);
-
-void decrease() {
-  if (fun == 0) return;
-
-  fun -= 1;
-}
+Animate funIcon(&Game::display);
 
 void increase() {
-  if (fun + 10 >= 100) {
+  if (fun + INCREASE_AMOUNT >= 100) {
     fun = 100;
   } else {
-    fun += 10;
+    fun += INCREASE_AMOUNT;
   }
 
   funDecreaseTimer.reset();
 }
 
-void init() {
-  // Init stat from EEPROM
+void decrease() {
+  if (fun <= DECREASE_AMOUNT) {
+    fun = 0;
+    return;
+  }
 
-  fun = Storage::load(STORAGE_KEY);
-
-  funAnimation.set(&Animation_Fun);
+  fun -= DECREASE_AMOUNT;
 }
 
 void printValue() {
   Game::display.setTextSize(1);
   Game::display.setTextColor(SSD1306_WHITE);
-  Game::display.setCursor(108, 52);
+  Game::display.setCursor(17, 54);
   Game::display.print(fun);
 }
 
-void setAnimation() {
+void setIconAnimation() {
   static bool blinking = false;
 
   if (fun < LowFun && !blinking) {
     blinking = true;
-    funAnimation.set(&Animation_Fun_Blink);
+    funIcon.set(&Animation_Fun_Blink);
     return;
   }
 
   if (fun >= LowFun && blinking) {
     blinking = false;
-    funAnimation.set(&Animation_Fun);
+    funIcon.set(&Animation_Fun);
   }
 }
 
-void handle() {
+void handleFunLogic() {
   static bool wasSleeping = false;
 
   if (Pet::isSleeping()) {
     if (!wasSleeping) {
       wasSleeping = true;
 
-      funDecreaseTimer.setInterval(DECREASE_TIME * 3);
+      funDecreaseTimer.setInterval(BASE_DECAY_SPEED * 3);
     }
   } else if (wasSleeping) {
     wasSleeping = false;
-    funDecreaseTimer.setInterval(DECREASE_TIME);
+    funDecreaseTimer.setInterval(BASE_DECAY_SPEED);
   }
 
   funDecreaseTimer.run();
 }
 
-void render() {
-  // Render UI
-  // Update stat if needed
+void init() {
+  fun = Storage::load(STORAGE_KEY);
 
-  handle();
-  setAnimation();
+  funIcon.set(&Animation_Fun);
+}
+
+void render() {
+  handleFunLogic();
+
+  setIconAnimation();
 
   printValue();
 
-  funAnimation.draw();
+  funIcon.draw();
 }
 
 void save() {
