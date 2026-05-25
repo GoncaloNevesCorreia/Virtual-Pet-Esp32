@@ -31,6 +31,7 @@ void toggleSleep();
 bool isHungry();
 bool isSleeping();
 bool isTired();
+bool isDead();
 
 }  // namespace Pet
 

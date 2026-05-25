@@ -1,6 +1,8 @@
 #include "Energy.h"
 
 namespace Pet_Energy {
+const uint8_t MAX_ENERGY = 100;
+
 const unsigned long INCREASE_AMOUNT = 1;
 const unsigned long DECREASE_AMOUNT = 1;
 
@@ -11,7 +13,7 @@ const unsigned long BASE_RECOVER_SPEED = 500;
 
 const uint8_t LowEnergy = 15;
 
-uint8_t energy = 100;
+uint8_t energy = MAX_ENERGY;
 
 Timer energyDecreaseTimer(decrease, BASE_DECAY_SPEED);
 Timer energyRecoverTimer(increase, BASE_RECOVER_SPEED);
@@ -19,8 +21,8 @@ Timer energyRecoverTimer(increase, BASE_RECOVER_SPEED);
 Animate energyIcon(&Game::display);
 
 void increase() {
-  if (energy + INCREASE_AMOUNT >= 100) {
-    energy = 100;
+  if (energy + INCREASE_AMOUNT >= MAX_ENERGY) {
+    energy = MAX_ENERGY;
   } else {
     energy += INCREASE_AMOUNT;
   }
@@ -77,6 +79,8 @@ void printValue() {
 void handleSleepLogic() {
   static bool wasSleeping = false;
 
+  if (Pet::isDead()) return;
+
   if (Pet::isSleeping()) {
     if (!wasSleeping) {
       wasSleeping = true;
@@ -84,7 +88,7 @@ void handleSleepLogic() {
       energyRecoverTimer.reset();
     }
 
-    if (energy == 100 || Pet::isHungry()) {
+    if (energy == MAX_ENERGY || Pet::isHungry()) {
       Pet::toggleSleep();
     } else {
       energyRecoverTimer.run();
@@ -125,6 +129,10 @@ void render() {
 
 void save() {
   Storage::save(STORAGE_KEY, energy);
+}
+
+void clear() {
+  Storage::save(STORAGE_KEY, MAX_ENERGY);
 }
 
 }  // namespace Pet_Energy

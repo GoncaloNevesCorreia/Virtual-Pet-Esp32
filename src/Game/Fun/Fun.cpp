@@ -1,23 +1,25 @@
 #include "Fun.h"
 
 namespace Pet_Fun {
+const uint8_t MAX_FUN = 100;
+
 const unsigned long INCREASE_AMOUNT = 10;
 const unsigned long DECREASE_AMOUNT = 1;
 
-const unsigned long BASE_DECAY_SPEED = 5000;
+const unsigned long BASE_DECAY_SPEED = 500;
 
 #define STORAGE_KEY "PET_FUN"
 
-const uint8_t LowFun = 80;
-uint8_t fun = 100;
+const uint8_t LowFun = 30;
+uint8_t fun = MAX_FUN;
 
 Timer funDecreaseTimer(decrease, BASE_DECAY_SPEED);
 
 Animate funIcon(&Game::display);
 
 void increase() {
-  if (fun + INCREASE_AMOUNT >= 100) {
-    fun = 100;
+  if (fun + INCREASE_AMOUNT >= MAX_FUN) {
+    fun = MAX_FUN;
   } else {
     fun += INCREASE_AMOUNT;
   }
@@ -59,6 +61,8 @@ void setIconAnimation() {
 void handleFunLogic() {
   static bool wasSleeping = false;
 
+  if (Pet::isDead()) return;
+
   if (Pet::isSleeping()) {
     if (!wasSleeping) {
       wasSleeping = true;
@@ -91,6 +95,10 @@ void render() {
 
 void save() {
   Storage::save(STORAGE_KEY, fun);
+}
+
+void clear() {
+  Storage::save(STORAGE_KEY, MAX_FUN);
 }
 
 }  // namespace Pet_Fun

@@ -25,6 +25,8 @@ void decreaseAmount(unsigned long amount);
 
 void save();
 
+void clear();
+
 }  // namespace Pet_Hunger
 
 #endif

@@ -24,6 +24,8 @@ void decrease();
 
 void save();
 
+void clear();
+
 }  // namespace Pet_Fun
 
 #endif

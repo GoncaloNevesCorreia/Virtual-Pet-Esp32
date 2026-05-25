@@ -23,15 +23,6 @@ enum State currentState = State::IDLE;
 
 Animate petAnimation(&Game::display);
 
-void init() {
-  petAnimation.set(&Animation_Pet_Idle);
-
-  Pet_Energy::init();
-  Pet_Fun::init();
-  Pet_Health::init();
-  Pet_Hunger::init();
-}
-
 bool canInteract() {
   if (currentState == State::EATING) {
     return false;
@@ -58,6 +49,10 @@ bool isTired() {
 
 bool isSleeping() {
   return currentState == State::SLEEPING;
+}
+
+bool isDead() {
+  return currentState == State::DEAD;
 }
 
 void updateAnimation() {
@@ -115,13 +110,16 @@ void refreshState() {
   setState(State::IDLE);
 }
 
-void render() {
-  petAnimation.draw();
+void init() {
+  refreshState();
+}
 
-  Pet_Energy::render();
-  Pet_Fun::render();
-  Pet_Health::render();
-  Pet_Hunger::render();
+void render() {
+  if (Pet_Health::health == 0 && !isDead()) {
+    setState(State::DEAD);
+  }
+
+  petAnimation.draw();
 }
 
 void eatEnd() {

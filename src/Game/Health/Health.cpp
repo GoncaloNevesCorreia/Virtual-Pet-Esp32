@@ -1,6 +1,8 @@
 #include "Health.h"
 
 namespace Pet_Health {
+const uint8_t MAX_HEALTH = 100;
+
 const unsigned long INCREASE_AMOUNT = 1;
 const unsigned long DECREASE_AMOUNT = 1;
 
@@ -11,7 +13,7 @@ const unsigned long BASE_RECOVER_SPEED = 1000;
 
 bool losingHealth = false;
 
-uint8_t health = 100;
+uint8_t health = MAX_HEALTH;
 
 Timer healthDecreaseTimer(decrease, BASE_DECAY_SPEED);
 Timer healthRecoverTimer(increase, BASE_RECOVER_SPEED);
@@ -19,8 +21,8 @@ Timer healthRecoverTimer(increase, BASE_RECOVER_SPEED);
 Animate healthIcon(&Game::display);
 
 void increase() {
-  if (health + INCREASE_AMOUNT >= 100) {
-    health = 100;
+  if (health + INCREASE_AMOUNT >= MAX_HEALTH) {
+    health = MAX_HEALTH;
   } else {
     health += INCREASE_AMOUNT;
   }
@@ -68,12 +70,8 @@ uint8_t getDecayModifier() {
     modifier += 2;
   }
 
-  if (Pet_Fun::fun < Pet_Fun::LowFun) {
-    modifier += 1;
-  }
-
   if (Pet_Fun::fun == 0) {
-    modifier += 2;
+    modifier += 1;
   }
 
   return modifier;
@@ -81,6 +79,8 @@ uint8_t getDecayModifier() {
 
 void handleHealthLogic() {
   static uint8_t previousModifier = 0;
+
+  if (Pet::isDead()) return;
 
   const uint8_t modifier = getDecayModifier();
 
@@ -123,6 +123,10 @@ void render() {
 
 void save() {
   Storage::save(STORAGE_KEY, health);
+}
+
+void clear() {
+  Storage::save(STORAGE_KEY, MAX_HEALTH);
 }
 
 }  // namespace Pet_Health

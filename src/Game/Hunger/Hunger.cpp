@@ -1,6 +1,8 @@
 #include "Hunger.h"
 
 namespace Pet_Hunger {
+const uint8_t MAX_HUNGER = 100;
+
 const unsigned long INCREASE_AMOUNT = 10;
 const unsigned long DECREASE_AMOUNT = 1;
 
@@ -9,15 +11,15 @@ const unsigned long BASE_DECAY_SPEED = 500;
 #define STORAGE_KEY "PET_HUNGER"
 
 const uint8_t LowHunger = 15;
-uint8_t hunger = 100;
+uint8_t hunger = MAX_HUNGER;
 
 Timer hungerDecreaseTimer(decrease, BASE_DECAY_SPEED);
 
 Animate hungerIcon(&Game::display);
 
 void increase() {
-  if (hunger + INCREASE_AMOUNT >= 100) {
-    hunger = 100;
+  if (hunger + INCREASE_AMOUNT >= MAX_HUNGER) {
+    hunger = MAX_HUNGER;
   } else {
     hunger += INCREASE_AMOUNT;
   }
@@ -76,6 +78,8 @@ void setIconAnimation() {
 void handleHungerLogic() {
   static bool wasSleeping = false;
 
+  if (Pet::isDead()) return;
+
   if (Pet::isSleeping()) {
     if (!wasSleeping) {
       wasSleeping = true;
@@ -108,6 +112,10 @@ void render() {
 
 void save() {
   Storage::save(STORAGE_KEY, hunger);
+}
+
+void clear() {
+  Storage::save(STORAGE_KEY, MAX_HUNGER);
 }
 
 }  // namespace Pet_Hunger

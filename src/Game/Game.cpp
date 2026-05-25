@@ -22,6 +22,10 @@ Button btnSleep(6);
 
 Timer autoSaveTimer(save, 10000);
 
+void eat();
+void play();
+void sleep();
+
 void init() {
   // Wait for display
   delay(500);
@@ -32,11 +36,16 @@ void init() {
     for (;;);  // Don't proceed, loop forever
   }
 
+  Pet_Energy::init();
+  Pet_Fun::init();
+  Pet_Health::init();
+  Pet_Hunger::init();
+
   Pet::init();
 
-  btnFeed.onClick(Pet::eat);
-  btnPlay.onClick(Pet::play);
-  btnSleep.onClick(Pet::toggleSleep);
+  btnFeed.onClick(eat);
+  btnPlay.onClick(play);
+  btnSleep.onClick(sleep);
 }
 
 void showFPS(unsigned long currentDelay) {
@@ -54,6 +63,11 @@ void showFPS(unsigned long currentDelay) {
 }
 
 void draw() {
+  Pet_Energy::render();
+  Pet_Fun::render();
+  Pet_Health::render();
+  Pet_Hunger::render();
+
   Pet::render();
 }
 
@@ -85,6 +99,47 @@ void save() {
   Pet_Fun::save();
   Pet_Health::save();
   Pet_Hunger::save();
+}
+
+void restart() {
+  Pet_Energy::clear();
+  Pet_Fun::clear();
+  Pet_Health::clear();
+  Pet_Hunger::clear();
+
+  Pet_Energy::init();
+  Pet_Fun::init();
+  Pet_Health::init();
+  Pet_Hunger::init();
+
+  Pet::init();
+}
+
+void eat() {
+  if (Pet::isDead()) {
+    restart();
+    return;
+  }
+
+  Pet::eat();
+}
+
+void play() {
+  if (Pet::isDead()) {
+    restart();
+    return;
+  }
+
+  Pet::play();
+}
+
+void sleep() {
+  if (Pet::isDead()) {
+    restart();
+    return;
+  }
+
+  Pet::toggleSleep();
 }
 
 }  // namespace Game
