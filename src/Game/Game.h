@@ -21,6 +21,12 @@ void loop();
 
 void save();
 
+void eat();
+
+void play();
+
+void sleep();
+
 }  // namespace Game
 
 #endif

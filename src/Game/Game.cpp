@@ -22,10 +22,6 @@ Button btnSleep(6);
 
 Timer autoSaveTimer(save, 10000);
 
-void eat();
-void play();
-void sleep();
-
 void init() {
   // Wait for display
   delay(500);

@@ -2,7 +2,11 @@
 
 namespace Network {
 
-#define OFFLINE
+// #define OFFLINE
+
+#define TOPIC_EAT "virtual_pet/eat"
+#define TOPIC_SLEEP "virtual_pet/sleep"
+#define TOPIC_PLAY "virtual_pet/play"
 
 const char* ssid = SECRET_SSID;
 const char* password = SECRET_PASS;
@@ -13,16 +17,22 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 
 void mqttCallback(char* topic, byte* message, unsigned int length) {
-  Serial.print("Message arrived on topic: ");
-  Serial.print(topic);
-  Serial.print(". Message: ");
-  String messageTemp;
+  Serial.println(topic);
 
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)message[i]);
-    messageTemp += (char)message[i];
+  if (strcmp(topic, TOPIC_EAT) == 0) {
+    Game::eat();
+    return;
   }
-  Serial.println();
+
+  if (strcmp(topic, TOPIC_PLAY) == 0) {
+    Game::play();
+    return;
+  }
+
+  if (strcmp(topic, TOPIC_SLEEP) == 0) {
+    Game::sleep();
+    return;
+  }
 }
 
 void setupMqttConnection() {
@@ -66,7 +76,9 @@ void reconnect() {
     if (client.connect(userID.c_str())) {
       Serial.println("connected");
       // Subscribe
-      client.subscribe("esp32/presence");
+      client.subscribe(TOPIC_EAT);
+      client.subscribe(TOPIC_PLAY);
+      client.subscribe(TOPIC_SLEEP);
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());

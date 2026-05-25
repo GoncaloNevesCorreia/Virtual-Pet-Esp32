@@ -5,6 +5,7 @@
 #include <WiFi.h>
 
 #include "Config.h"
+#include "Game/Game.h"
 
 namespace Network {
 
