@@ -4,8 +4,8 @@ namespace Pet_Health {
 const unsigned long INCREASE_AMOUNT = 1;
 const unsigned long DECREASE_AMOUNT = 1;
 
-const unsigned long BASE_DECAY_SPEED = 2000;
-const unsigned long BASE_RECOVER_SPEED = 2000;
+const unsigned long BASE_DECAY_SPEED = 1200;
+const unsigned long BASE_RECOVER_SPEED = 1000;
 
 #define STORAGE_KEY "PET_HEALTH"
 
@@ -35,20 +35,6 @@ void decrease() {
   health -= DECREASE_AMOUNT;
 }
 
-uint8_t getDecayModifier() {
-  uint8_t modifier = 0;
-
-  if (Pet_Hunger::hunger < Pet_Hunger::LowHunger) {
-    modifier = modifier + 1;
-  }
-
-  if (Pet_Hunger::hunger == 0) {
-    modifier = modifier + 2;
-  }
-
-  return modifier;
-}
-
 void setIconAnimation() {
   static bool blinking = false;
 
@@ -71,26 +57,52 @@ void printValue() {
   Game::display.print(health);
 }
 
+uint8_t getDecayModifier() {
+  uint8_t modifier = 0;
+
+  if (Pet_Hunger::hunger < Pet_Hunger::LowHunger) {
+    modifier += 1;
+  }
+
+  if (Pet_Hunger::hunger == 0) {
+    modifier += 2;
+  }
+
+  if (Pet_Fun::fun < Pet_Fun::LowFun) {
+    modifier += 1;
+  }
+
+  if (Pet_Fun::fun == 0) {
+    modifier += 2;
+  }
+
+  return modifier;
+}
+
 void handleHealthLogic() {
+  static uint8_t previousModifier = 0;
+
   const uint8_t modifier = getDecayModifier();
 
-  if (modifier == 0) {
-    if (losingHealth) {
-      losingHealth = false;
-
-      healthRecoverTimer.reset();
+  if (modifier == previousModifier) {
+    if (modifier == 0) {
+      healthRecoverTimer.run();
+    } else {
+      healthDecreaseTimer.run();
     }
-
-    healthRecoverTimer.run();
     return;
   }
 
-  if (!losingHealth) {
-    losingHealth = true;
-    healthDecreaseTimer.setInterval(BASE_DECAY_SPEED - (200 * modifier));
-  }
+  if (modifier == 0) {
+    losingHealth = false;
+    previousModifier = 0;
 
-  healthDecreaseTimer.run();
+    healthRecoverTimer.reset();
+  } else {
+    losingHealth = true;
+    previousModifier = modifier;
+    healthDecreaseTimer.setInterval(BASE_DECAY_SPEED - constrain((200 * modifier), 0, BASE_DECAY_SPEED));
+  }
 }
 
 void init() {
