@@ -2,8 +2,6 @@
 
 namespace Network {
 
-// #define OFFLINE
-
 #define TOPIC_EAT "virtual_pet/eat"
 #define TOPIC_SLEEP "virtual_pet/sleep"
 #define TOPIC_PLAY "virtual_pet/play"
@@ -94,23 +92,17 @@ void sendData() {
 }
 
 void init() {
-#ifndef OFFLINE
-
   setup_wifi();
 
   setupMqttConnection();
-#endif
 }
 
 void loop() {
-#ifndef OFFLINE
   if (!client.connected()) {
     reconnect();
   }
 
   client.loop();
-
-#endif
 }
 
 }  // namespace Network
