@@ -18,9 +18,30 @@
 
 namespace Pet {
 
+enum State {
+  HAPPY,  // TODO
+  IDLE,
+  SAD,  // TODO
+  PLAYING,
+
+  HUNGRY,  // TODO
+  EATING,
+
+  TIRED,  // TODO
+  FALLING_ASLEEP,
+  SLEEPING,
+  WAKING_UP,
+
+  DEAD,
+};
+
+typedef void (*OnStateChange)(State newState);
+
 void init();
 
 void render();
+
+void onStateChange(OnStateChange callback);
 
 void eat();
 

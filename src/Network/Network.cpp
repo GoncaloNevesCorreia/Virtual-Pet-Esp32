@@ -5,6 +5,7 @@ namespace Network {
 #define TOPIC_EAT "virtual_pet/eat"
 #define TOPIC_SLEEP "virtual_pet/sleep"
 #define TOPIC_PLAY "virtual_pet/play"
+#define TOPIC_UPDATE_STATE "virtual_pet/update_state"
 
 const char* ssid = SECRET_SSID;
 const char* password = SECRET_PASS;
@@ -87,8 +88,8 @@ void reconnect() {
   }
 }
 
-void sendData() {
-  client.publish("esp32/temperature", "69");
+void sendNewState(const char* newState) {
+  client.publish(TOPIC_UPDATE_STATE, newState);
 }
 
 void init() {

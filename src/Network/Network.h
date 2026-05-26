@@ -13,6 +13,8 @@ void init();
 
 void loop();
 
+void sendNewState(const char* newState);
+
 }  // namespace Network
 
 #endif

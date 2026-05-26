@@ -2,33 +2,26 @@
 
 namespace Pet {
 
-enum State {
-  HAPPY,  // TODO
-  IDLE,
-  SAD,  // TODO
-  PLAYING,
-
-  HUNGRY,  // TODO
-  EATING,
-
-  TIRED,  // TODO
-  FALLING_ASLEEP,
-  SLEEPING,
-  WAKING_UP,
-
-  DEAD,
-};
-
 enum State currentState = State::IDLE;
 
 Animate petAnimation(&Game::display);
 
+OnStateChange _onStateChangeCallback = nullptr;
+
 bool canInteract() {
+  if (currentState == State::DEAD) {
+    return false;
+  }
+
   if (currentState == State::EATING) {
     return false;
   }
 
   if (currentState == State::FALLING_ASLEEP) {
+    return false;
+  }
+
+  if (currentState == State::WAKING_UP) {
     return false;
   }
 
@@ -45,6 +38,14 @@ bool isHungry() {
 
 bool isTired() {
   return Pet_Energy::energy < Pet_Energy::LowEnergy;
+}
+
+bool isHappy() {
+  return Pet_Fun::fun > 70;
+}
+
+bool isSad() {
+  return Pet_Fun::fun < Pet_Fun::LowFun;
 }
 
 bool isSleeping() {
@@ -82,9 +83,15 @@ void updateAnimation() {
 }
 
 void setState(enum State state) {
+  if (currentState == state) return;
+
   currentState = state;
 
   updateAnimation();
+
+  if (_onStateChangeCallback != nullptr) {
+    _onStateChangeCallback(state);
+  }
 }
 
 enum State getState() {
@@ -92,6 +99,8 @@ enum State getState() {
 }
 
 void refreshState() {
+  if (isDead() || isSleeping()) return;
+
   if (currentState == State::FALLING_ASLEEP) {
     setState(State::SLEEPING);
     return;
@@ -107,16 +116,34 @@ void refreshState() {
     return;
   }
 
+  if (isHappy()) {
+    setState(State::HAPPY);
+    return;
+  }
+
+  if (isSad()) {
+    setState(State::SAD);
+    return;
+  }
+
   setState(State::IDLE);
 }
 
 void init() {
+  if (isDead()) {
+    currentState = State::IDLE;
+  }
+
   refreshState();
 }
 
 void render() {
   if (Pet_Health::health == 0 && !isDead()) {
     setState(State::DEAD);
+  }
+
+  if (canInteract()) {
+    refreshState();
   }
 
   petAnimation.draw();
@@ -134,7 +161,7 @@ void eat() {
   if (currentState == State::SLEEPING) {
     setState(State::WAKING_UP);
 
-    petAnimation.onEnd(eat);
+    petAnimation.onEnd(refreshState);
     return;
   }
 
@@ -157,7 +184,7 @@ void play() {
   if (currentState == State::SLEEPING) {
     setState(State::WAKING_UP);
 
-    petAnimation.onEnd(play);
+    petAnimation.onEnd(refreshState);
     return;
   }
 
@@ -178,6 +205,10 @@ void toggleSleep() {
   }
 
   petAnimation.onEnd(refreshState);
+}
+
+void onStateChange(OnStateChange callback) {
+  _onStateChangeCallback = callback;
 }
 
 }  // namespace Pet

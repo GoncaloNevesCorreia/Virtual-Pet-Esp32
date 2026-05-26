@@ -9,6 +9,7 @@
 #include <Wire.h>
 
 #include "Game/Pet/Pet.h"
+#include "Network/Network.h"
 #include "Storage/Storage.h"
 
 namespace Game {

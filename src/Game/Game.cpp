@@ -22,6 +22,8 @@ Button btnSleep(6);
 
 Timer autoSaveTimer(save, 10000);
 
+void onPetStateChange(Pet::State state);
+
 void init() {
   // Wait for display
   delay(500);
@@ -38,6 +40,8 @@ void init() {
   Pet_Hunger::init();
 
   Pet::init();
+
+  Pet::onStateChange(onPetStateChange);
 
   btnFeed.onClick(eat);
   btnPlay.onClick(play);
@@ -136,6 +140,47 @@ void sleep() {
   }
 
   Pet::toggleSleep();
+}
+
+const char* petStateToString(Pet::State state) {
+  switch (state) {
+    case Pet::HAPPY:
+      return "HAPPY";
+
+    case Pet::SAD:
+      return "SAD";
+
+    case Pet::PLAYING:
+      return "PLAYING";
+
+    case Pet::HUNGRY:
+      return "HUNGRY";
+
+    case Pet::EATING:
+      return "EATING";
+
+    case Pet::TIRED:
+      return "TIRED";
+
+    case Pet::FALLING_ASLEEP:
+      return "FALLING_ASLEEP";
+
+    case Pet::SLEEPING:
+      return "SLEEPING";
+
+    case Pet::WAKING_UP:
+      return "WAKING_UP";
+
+    case Pet::DEAD:
+      return "DEAD";
+
+    default:
+      return "IDLE";
+  }
+}
+
+void onPetStateChange(Pet::State state) {
+  Network::sendNewState(petStateToString(state));
 }
 
 }  // namespace Game

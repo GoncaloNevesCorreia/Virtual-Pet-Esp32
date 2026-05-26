@@ -2,17 +2,14 @@
 #define DEBUG
 
 // Disables Network Functionality
-#define OFFLINE
+// #define OFFLINE
 
 #include <Arduino.h>
 #include <Preferences.h>
 
 #include "Game/Game.h"
-#include "Storage/Storage.h"
-
-#ifndef OFFLINE
 #include "Network/Network.h"
-#endif
+#include "Storage/Storage.h"
 
 void setup() {
   Serial.begin(115200);
