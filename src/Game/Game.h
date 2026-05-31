@@ -20,13 +20,13 @@ void init();
 
 void loop();
 
-void save();
-
 void eat();
 
 void play();
 
 void sleep();
+
+void getStats(uint8_t stats[4]);
 
 }  // namespace Game
 

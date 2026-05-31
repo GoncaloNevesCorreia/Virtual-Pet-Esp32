@@ -10,6 +10,8 @@ namespace Game {
 #define OLED_RESET -1
 #define SCREEN_ADDRESS 0x3C
 
+#define AUTO_SAVE_INTERVAL = 10000
+
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 const unsigned long FrameDelay = 1000 / FPS;
@@ -20,9 +22,14 @@ Button btnFeed(4);
 Button btnPlay(5);
 Button btnSleep(6);
 
+void onStateChange();
+
+void save();
+
+// TODO: Implement Auto-Save on state change.
 Timer autoSaveTimer(save, 10000);
 
-void onPetStateChange(Pet::State state);
+Timer autoSendStats(Network::sendStats, 1000);
 
 void init() {
   // Wait for display
@@ -41,7 +48,7 @@ void init() {
 
   Pet::init();
 
-  Pet::onStateChange(onPetStateChange);
+  Pet::onStateChange(onStateChange);
 
   btnFeed.onClick(eat);
   btnPlay.onClick(play);
@@ -92,6 +99,7 @@ void loop() {
   display.display();
 
   autoSaveTimer.run();
+  autoSendStats.run();
 }
 
 void save() {
@@ -142,45 +150,17 @@ void sleep() {
   Pet::toggleSleep();
 }
 
-const char* petStateToString(Pet::State state) {
-  switch (state) {
-    case Pet::HAPPY:
-      return "HAPPY";
-
-    case Pet::SAD:
-      return "SAD";
-
-    case Pet::PLAYING:
-      return "PLAYING";
-
-    case Pet::HUNGRY:
-      return "HUNGRY";
-
-    case Pet::EATING:
-      return "EATING";
-
-    case Pet::TIRED:
-      return "TIRED";
-
-    case Pet::FALLING_ASLEEP:
-      return "FALLING_ASLEEP";
-
-    case Pet::SLEEPING:
-      return "SLEEPING";
-
-    case Pet::WAKING_UP:
-      return "WAKING_UP";
-
-    case Pet::DEAD:
-      return "DEAD";
-
-    default:
-      return "IDLE";
-  }
+void getStats(uint8_t stats[5]) {
+  stats[0] = Pet::getState();
+  stats[1] = Pet_Health::health;
+  stats[2] = Pet_Hunger::hunger;
+  stats[3] = Pet_Energy::energy;
+  stats[4] = Pet_Fun::fun;
 }
 
-void onPetStateChange(Pet::State state) {
-  Network::sendNewState(petStateToString(state));
+void onStateChange() {
+  save();
+  autoSaveTimer.reset();
 }
 
 }  // namespace Game

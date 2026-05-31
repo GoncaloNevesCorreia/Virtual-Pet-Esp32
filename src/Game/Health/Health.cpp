@@ -122,6 +122,12 @@ void render() {
 }
 
 void save() {
+  static uint8_t prev = 0;
+
+  if (health == prev) return;
+
+  prev = health;
+
   Storage::save(STORAGE_KEY, health);
 }
 

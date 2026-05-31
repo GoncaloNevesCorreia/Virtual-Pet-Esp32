@@ -2,10 +2,16 @@
 
 namespace Network {
 
+// Actions sent from the WebServer.
 #define TOPIC_EAT "virtual_pet/eat"
 #define TOPIC_SLEEP "virtual_pet/sleep"
 #define TOPIC_PLAY "virtual_pet/play"
-#define TOPIC_UPDATE_STATE "virtual_pet/update_state"
+
+// Request from WebServer to send back the latest Data
+#define TOPIC_GET_LATEST "virtual_pet/get_latest"
+
+// Data sent to the WebServer
+#define TOPIC_STATS "virtual_pet/stats"
 
 const char* ssid = SECRET_SSID;
 const char* password = SECRET_PASS;
@@ -14,6 +20,8 @@ const char* mqtt_server = SECRET_MQTT;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
+
+bool online = false;
 
 void mqttCallback(char* topic, byte* message, unsigned int length) {
   Serial.println(topic);
@@ -30,6 +38,11 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
 
   if (strcmp(topic, TOPIC_SLEEP) == 0) {
     Game::sleep();
+    return;
+  }
+
+  if (strcmp(topic, TOPIC_GET_LATEST) == 0) {
+    sendStats();
     return;
   }
 }
@@ -65,6 +78,7 @@ String createUniqueUserID() {
   return clientId;
 }
 
+// Improve to not use delay
 void reconnect() {
   // Loop until we're reconnected
   while (!client.connected()) {
@@ -78,6 +92,9 @@ void reconnect() {
       client.subscribe(TOPIC_EAT);
       client.subscribe(TOPIC_PLAY);
       client.subscribe(TOPIC_SLEEP);
+      client.subscribe(TOPIC_GET_LATEST);
+
+      online = true;
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -88,18 +105,32 @@ void reconnect() {
   }
 }
 
-void sendNewState(const char* newState) {
-  client.publish(TOPIC_UPDATE_STATE, newState);
+void sendStats() {
+  uint8_t stats[5];
+
+  Game::getStats(stats);
+
+  Serial.print("Sending Stats: ");
+  Serial.print(stats[0]);
+  Serial.print(stats[1]);
+  Serial.print(stats[2]);
+  Serial.print(stats[3]);
+  Serial.println(stats[4]);
+
+  client.publish(TOPIC_STATS, stats, sizeof(stats));
 }
 
 void init() {
   setup_wifi();
 
   setupMqttConnection();
+
+  online = true;
 }
 
 void loop() {
   if (!client.connected()) {
+    online = false;
     reconnect();
   }
 

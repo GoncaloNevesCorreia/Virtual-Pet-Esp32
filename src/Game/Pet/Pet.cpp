@@ -2,6 +2,23 @@
 
 namespace Pet {
 
+enum State {
+  HAPPY,  // TODO
+  IDLE,
+  SAD,  // TODO
+  PLAYING,
+
+  HUNGRY,  // TODO
+  EATING,
+
+  TIRED,  // TODO
+  FALLING_ASLEEP,
+  SLEEPING,
+  WAKING_UP,
+
+  DEAD,
+};
+
 enum State currentState = State::IDLE;
 
 Animate petAnimation(&Game::display);
@@ -90,12 +107,8 @@ void setState(enum State state) {
   updateAnimation();
 
   if (_onStateChangeCallback != nullptr) {
-    _onStateChangeCallback(state);
+    _onStateChangeCallback();
   }
-}
-
-enum State getState() {
-  return currentState;
 }
 
 void refreshState() {
@@ -209,6 +222,10 @@ void toggleSleep() {
 
 void onStateChange(OnStateChange callback) {
   _onStateChangeCallback = callback;
+}
+
+uint8_t getState() {
+  return currentState;
 }
 
 }  // namespace Pet
