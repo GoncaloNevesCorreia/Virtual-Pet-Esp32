@@ -14,6 +14,23 @@
 void setup() {
   Serial.begin(115200);
 
+#ifdef DEBUG
+  Serial.print("Flash size: ");
+  Serial.print(ESP.getFlashChipSize());
+  Serial.println(" bytes");
+
+  Serial.print("PSRAM found: ");
+  Serial.println(psramFound() ? "yes" : "no");
+
+  Serial.print("PSRAM size: ");
+  Serial.print(ESP.getPsramSize());
+  Serial.println(" bytes");
+
+  Serial.print("Free PSRAM: ");
+  Serial.print(ESP.getFreePsram());
+  Serial.println(" bytes");
+#endif
+
   Storage::init();
 
 #ifndef OFFLINE

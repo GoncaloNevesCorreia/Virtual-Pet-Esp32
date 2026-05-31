@@ -8,7 +8,12 @@
 			"id": "esp",
 			"top": 0,
 			"left": -4.76,
-			"attrs": {}
+			"attrs": {
+				"flashSize": "8",
+				"psramType": "octal",
+				"psramSize": "8",
+				"serialInterface": "USB_SERIAL_JTAG"
+			}
 		},
 		{
 			"type": "board-ssd1306",
@@ -40,8 +45,6 @@
 		}
 	],
 	"connections": [
-		["esp:TX", "$serialMonitor:RX", "", []],
-		["esp:RX", "$serialMonitor:TX", "", []],
 		[
 			"esp:3V3.1",
 			"oled1:VCC",
