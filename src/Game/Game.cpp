@@ -161,6 +161,9 @@ void getStats(uint8_t stats[5]) {
 void onStateChange() {
   save();
   autoSaveTimer.reset();
+
+  Network::sendStats();
+  autoSendStats.reset();
 }
 
 }  // namespace Game
