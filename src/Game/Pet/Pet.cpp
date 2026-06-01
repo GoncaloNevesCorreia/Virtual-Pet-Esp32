@@ -93,6 +93,18 @@ void updateAnimation() {
     case State::PLAYING:
       petAnimation.set(&Animation_Pet_Playing);
       break;
+    case State::HAPPY:
+      petAnimation.set(&Animation_Pet_Happy);
+      break;
+    case State::SAD:
+      petAnimation.set(&Animation_Pet_Sad);
+      break;
+    case State::HUNGRY:
+      petAnimation.set(&Animation_Pet_Hungry);
+      break;
+    case State::TIRED:
+      petAnimation.set(&Animation_Pet_Tired);
+      break;
     default:
       petAnimation.set(&Animation_Pet_Idle);
       break;
