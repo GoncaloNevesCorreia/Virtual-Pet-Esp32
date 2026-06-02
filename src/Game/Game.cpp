@@ -31,6 +31,8 @@ Timer autoSaveTimer(save, 10000);
 
 Timer autoSendStats(Network::sendStats, 1000);
 
+Animate wifiIcon(&Game::display);
+
 void init() {
   // Wait for display
   delay(500);
@@ -69,6 +71,16 @@ void showFPS(unsigned long currentDelay) {
   }
 }
 
+void renderConnectionState() {
+  if (Network::isOnline()) {
+    wifiIcon.set(&Animation_Wifi);
+  } else {
+    wifiIcon.set(&Animation_Wifi_Connecting);
+  }
+
+  wifiIcon.draw();
+}
+
 void draw() {
   Pet_Energy::render();
   Pet_Fun::render();
@@ -76,6 +88,8 @@ void draw() {
   Pet_Hunger::render();
 
   Pet::render();
+
+  renderConnectionState();
 }
 
 void loop() {

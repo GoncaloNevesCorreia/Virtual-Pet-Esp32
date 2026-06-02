@@ -6,7 +6,7 @@ const uint8_t MAX_ENERGY = 100;
 const unsigned long INCREASE_AMOUNT = 1;
 const unsigned long DECREASE_AMOUNT = 1;
 
-const unsigned long BASE_DECAY_SPEED = 5000;
+const unsigned long BASE_DECAY_SPEED = 500;
 const unsigned long BASE_RECOVER_SPEED = 500;
 
 #define STORAGE_KEY "PET_ENERGY"

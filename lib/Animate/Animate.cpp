@@ -5,6 +5,8 @@ void Animate::updateFrame() {
 }
 
 void Animate::set(const Animation* animation) {
+  if (animation == _animation) return;
+
   _animation = animation;
   _lastFrameTime = millis();
   _currentFrame = 0;

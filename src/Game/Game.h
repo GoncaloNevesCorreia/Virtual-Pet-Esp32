@@ -9,6 +9,7 @@
 #include <Wire.h>
 
 #include "Game/Pet/Pet.h"
+#include "Game/Ui/Stats/Wifi.h"
 #include "Network/Network.h"
 #include "Storage/Storage.h"
 

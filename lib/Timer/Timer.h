@@ -3,20 +3,24 @@
 
 #include <Arduino.h>
 
-typedef void (*Callback)();
+#define TIMER_CALLBACK_SIGNATURE std::function<void()> callback
 
 class Timer {
  private:
   unsigned long _lastTime = 0;
   uint16_t _interval;
-  Callback _callback;
+  std::function<void()> _callback;
 
  public:
-  Timer(Callback callback, uint16_t interval) : _callback(callback), _interval(interval) {};
+  Timer() {};
+  Timer(uint16_t interval) : _interval(interval) {};
+  Timer(TIMER_CALLBACK_SIGNATURE, uint16_t interval) : _callback(callback), _interval(interval) {};
 
   void run();
 
   void reset();
+
+  void setCallback(TIMER_CALLBACK_SIGNATURE);
 
   void setInterval(uint16_t interval);
 };

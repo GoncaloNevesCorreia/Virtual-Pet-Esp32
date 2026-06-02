@@ -13,15 +13,14 @@ namespace Network {
 // Data sent to the WebServer
 #define TOPIC_STATS "virtual_pet/stats"
 
-const char* ssid = SECRET_SSID;
-const char* password = SECRET_PASS;
+String ssid = SECRET_SSID;
+String password = SECRET_PASS;
 
-const char* mqtt_server = SECRET_MQTT;
+String mqtt_server = SECRET_MQTT;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
-
-bool online = false;
+NetHelper netHelper;
 
 void mqttCallback(char* topic, byte* message, unsigned int length) {
   Serial.println(topic);
@@ -47,65 +46,9 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
   }
 }
 
-void setupMqttConnection() {
-  client.setServer(mqtt_server, 1883);
-  client.setCallback(mqttCallback);
-}
-
-void setup_wifi() {
-  delay(10);
-  // We start by connecting to a WiFi network
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
-}
-
-String createUniqueUserID() {
-  String clientId = F("IOT2026-virtualpet-");
-  clientId += String(random(0xffff), HEX);
-  return clientId;
-}
-
-// Improve to not use delay
-void reconnect() {
-  // Loop until we're reconnected
-  while (!client.connected()) {
-    Serial.print("Attempting MQTT connection...");
-    // Attempt to connect
-
-    String userID = createUniqueUserID();
-    if (client.connect(userID.c_str())) {
-      Serial.println("connected");
-      // Subscribe
-      client.subscribe(TOPIC_EAT);
-      client.subscribe(TOPIC_PLAY);
-      client.subscribe(TOPIC_SLEEP);
-      client.subscribe(TOPIC_GET_LATEST);
-
-      online = true;
-    } else {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
-      delay(5000);
-    }
-  }
-}
-
 void sendStats() {
+  if (!netHelper.isOnline()) return;
+
   uint8_t stats[5];
 
   Game::getStats(stats);
@@ -120,21 +63,26 @@ void sendStats() {
   client.publish(TOPIC_STATS, stats, sizeof(stats));
 }
 
+void onConnectedMQTT() {
+  client.subscribe(TOPIC_EAT);
+  client.subscribe(TOPIC_PLAY);
+  client.subscribe(TOPIC_SLEEP);
+  client.subscribe(TOPIC_GET_LATEST);
+}
+
 void init() {
-  setup_wifi();
+  netHelper.setupWifi(ssid, password);
+  netHelper.setupMQTT(&client, mqtt_server, onConnectedMQTT);
 
-  setupMqttConnection();
-
-  online = true;
+  client.setCallback(mqttCallback);
 }
 
 void loop() {
-  if (!client.connected()) {
-    online = false;
-    reconnect();
-  }
+  netHelper.loop();
+}
 
-  client.loop();
+bool isOnline() {
+  return netHelper.isOnline();
 }
 
 }  // namespace Network

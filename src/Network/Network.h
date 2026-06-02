@@ -1,6 +1,7 @@
 #ifndef NETWORK_H
 #define NETWORK_H
 
+#include <NetHelper.h>
 #include <PubSubClient.h>
 #include <WiFi.h>
 
@@ -12,6 +13,8 @@ namespace Network {
 void init();
 
 void loop();
+
+bool isOnline();
 
 void sendStats();
 
