@@ -35,6 +35,12 @@ void NetHelper::onWiFiGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
   Serial.println(WiFi.localIP());
 
   _wifiConnected = true;
+
+  if (!_client->connected()) {
+    _mqttReconnectionTimer.reset();
+    _mqttConnected = false;
+    reconnectMQTT();
+  }
 }
 
 void NetHelper::onWiFiDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
@@ -49,10 +55,11 @@ void NetHelper::onWiFiDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
 
 void NetHelper::setupMQTT(PubSubClient* client, String mqtt_server, onConnected callback) {
   _client = client;
+  _mqtt_server = mqtt_server;
 
   _client->disconnect();
 
-  _mqtt_server = mqtt_server;
+  _client->setServer(_mqtt_server.c_str(), 1883);
 
   _onMQTTConnectedCB = callback;
 
@@ -67,8 +74,6 @@ String NetHelper::createUniqueUserID() {
 
 void NetHelper::reconnectMQTT() {
   Serial.print("Attempting MQTT connection...");
-
-  _client->setServer(_mqtt_server.c_str(), 1883);
 
   String userID = createUniqueUserID();
 
@@ -86,6 +91,8 @@ void NetHelper::reconnectMQTT() {
 }
 
 void NetHelper::loop() {
+  if (!_wifiConnected) return;
+
   if (!_client->connected()) {
     _mqttConnected = false;
     _mqttReconnectionTimer.run();
