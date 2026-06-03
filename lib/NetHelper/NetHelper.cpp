@@ -88,10 +88,20 @@ void NetHelper::reconnectMQTT() {
   if (_client->connect(userID.c_str())) {
     Serial.println("connected");
     _mqttConnected = true;
+    mqttReconnectionAttempts = 0;
 
     if (_onMQTTConnectedCB != nullptr) _onMQTTConnectedCB(_mqtt_server);
 
   } else {
+    mqttReconnectionAttempts++;
+
+    if (mqttReconnectionAttempts >= 3) {
+      _mqttServerProvided = false;
+      _mqttConnected = false;
+      _mqtt_server = "";
+      return;
+    }
+
     Serial.print("failed, rc=");
     Serial.print(_client->state());
     Serial.println(" try again in 5 seconds");

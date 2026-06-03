@@ -12,6 +12,9 @@ class NetHelper {
   typedef void (*onConnectedWifi)(String ssid, String password);
   typedef void (*onConnectedMQTT)(String host);
 
+  const byte MAX_RECONNECTION_ATTEMPTS = 3;
+  byte mqttReconnectionAttempts = 0;
+
   Timer _mqttReconnectionTimer;
   Preferences prefs;
 
