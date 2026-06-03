@@ -13,11 +13,6 @@ namespace Network {
 // Data sent to the WebServer
 #define TOPIC_STATS "virtual_pet/stats"
 
-String ssid = "";
-String password = "";
-
-String mqtt_server = SECRET_MQTT;
-
 WiFiClient espClient;
 PubSubClient client(espClient);
 NetHelper netHelper;
@@ -63,26 +58,31 @@ void sendStats() {
   client.publish(TOPIC_STATS, stats, sizeof(stats));
 }
 
-void onConnectedMQTT() {
+void onConnectedMQTT(String mqtt_server) {
   client.subscribe(TOPIC_EAT);
   client.subscribe(TOPIC_PLAY);
   client.subscribe(TOPIC_SLEEP);
   client.subscribe(TOPIC_GET_LATEST);
+
+  Storage::saveCredentials("mqtt_server", mqtt_server);
 }
 
-void onConnectedWifi(String ssid, String password) {
-  Storage::saveCredentials("ssid", ssid);
-  Storage::saveCredentials("pass", password);
+void onConnectedWifi(String _ssid, String _password) {
+  Storage::saveCredentials("ssid", _ssid);
+  Storage::saveCredentials("pass", _password);
 }
 
 void init() {
-  ssid = Storage::loadCredentials("ssid");
-  password = Storage::loadCredentials("pass");
+  String ssid = Storage::loadCredentials("ssid");
+  String password = Storage::loadCredentials("pass");
+
+  String mqtt_server = Storage::loadCredentials("mqtt_server");
 
   if (ssid.length() > 0) {
     setupWifi(ssid, password);
 
-    setupMQTT(mqtt_server);
+    if (mqtt_server.length() > 0)
+      setupMQTT(mqtt_server);
   }
 
   client.setCallback(mqttCallback);

@@ -1,5 +1,5 @@
 // Slows down code to improve wokwi simulation
-#define DEBUG
+// #define DEBUG
 
 // Disables Network Functionality
 // #define OFFLINE

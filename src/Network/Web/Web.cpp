@@ -6,8 +6,8 @@ const char* password = "123456789";
 
 const uint8_t DNS_PORT = 53;
 
-IPAddress apIP(192, 168, 1, 1);
-IPAddress gateway(192, 168, 1, 1);
+IPAddress apIP(192, 168, 4, 1);
+IPAddress gateway(192, 168, 4, 1);
 IPAddress subnet(255, 255, 255, 0);
 
 WebServer server(80);
@@ -93,6 +93,9 @@ String getPage() {
 
     <label>WiFi Password</label>
     <input name="pass" type="password">
+    
+    <label>MQTT Broker</label>
+    <input name="mqtt_server" required>
 
     <button type="submit">Connect</button>
   </form>
@@ -111,10 +114,19 @@ void handleSave() {
     return;
   }
 
+  if (!server.hasArg("mqtt_server") || server.arg("mqtt_server").length() == 0) {
+    server.send(400, "text/plain", "Missing MQTT Host");
+    return;
+  }
+
   String ssid = server.arg("ssid");
   String pass = server.arg("pass");
+  String mqtt_server = server.arg("mqtt_server");
 
   Network::setupWifi(ssid, pass);
+  Network::setupMQTT(mqtt_server);
+
+  connecting = true;
 
   server.sendHeader("Location", "/", true);
   server.send(303, "text/plain", "Connecting...");

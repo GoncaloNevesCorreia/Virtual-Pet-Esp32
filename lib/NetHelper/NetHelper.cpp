@@ -69,11 +69,13 @@ void NetHelper::setupMQTT(PubSubClient* client, String mqtt_server, onConnectedM
 
   _onMQTTConnectedCB = callback;
 
+  _mqttServerProvided = true;
+
   _mqttReconnectionTimer.setCallback([this]() { this->reconnectMQTT(); });
 }
 
 String NetHelper::createUniqueUserID() {
-  String clientId = F("IOT2026-virtualpet-");
+  String clientId = F("IOT2026-");
   clientId += String(random(0xffff), HEX);
   return clientId;
 }
@@ -87,7 +89,7 @@ void NetHelper::reconnectMQTT() {
     Serial.println("connected");
     _mqttConnected = true;
 
-    if (_onMQTTConnectedCB != nullptr) _onMQTTConnectedCB();
+    if (_onMQTTConnectedCB != nullptr) _onMQTTConnectedCB(_mqtt_server);
 
   } else {
     Serial.print("failed, rc=");
@@ -97,7 +99,7 @@ void NetHelper::reconnectMQTT() {
 }
 
 void NetHelper::loop() {
-  if (!_wifiConnected) return;
+  if (!_wifiConnected || !_mqttServerProvided) return;
 
   if (!_client->connected()) {
     _mqttConnected = false;

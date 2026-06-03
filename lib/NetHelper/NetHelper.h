@@ -10,7 +10,7 @@
 class NetHelper {
  private:
   typedef void (*onConnectedWifi)(String ssid, String password);
-  typedef void (*onConnectedMQTT)();
+  typedef void (*onConnectedMQTT)(String host);
 
   Timer _mqttReconnectionTimer;
   Preferences prefs;
@@ -27,6 +27,7 @@ class NetHelper {
   String _UUID;
 
   onConnectedMQTT _onMQTTConnectedCB;
+  bool _mqttServerProvided = false;
   bool _mqttConnected = false;
 
   void onWifiConnected(WiFiEvent_t event, WiFiEventInfo_t info);
