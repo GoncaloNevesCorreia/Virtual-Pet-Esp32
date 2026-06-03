@@ -6,7 +6,6 @@
 #include <WebServer.h>
 #include <WiFi.h>
 
-#include "Config.h"
 #include "Game/Game.h"
 #include "Web/Web.h"
 

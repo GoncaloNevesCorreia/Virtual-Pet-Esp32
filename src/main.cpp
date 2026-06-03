@@ -1,4 +1,5 @@
 // Slows down code to improve wokwi simulation
+// and adds testing Network credentials to Storage
 // #define DEBUG
 
 // Disables Network Functionality
@@ -33,6 +34,13 @@ void setup() {
   Storage::init();
 
 #ifndef OFFLINE
+
+#ifdef DEBUG
+  Storage::saveCredentials("ssid", "Wokwi-GUEST");
+  Storage::saveCredentials("pass", "");
+  Storage::saveCredentials("mqtt_server", "192.168.1.80");
+#endif
+
   Network::init();
 #endif
 
