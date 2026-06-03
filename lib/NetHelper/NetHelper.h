@@ -2,7 +2,6 @@
 #define WIFI_HELPER_H
 
 #include <Arduino.h>
-#include <Preferences.h>
 #include <PubSubClient.h>
 #include <Timer.h>
 #include <WiFi.h>
@@ -16,7 +15,6 @@ class NetHelper {
   byte mqttReconnectionAttempts = 0;
 
   Timer _mqttReconnectionTimer;
-  Preferences prefs;
 
   String _ssid;
   String _password;
