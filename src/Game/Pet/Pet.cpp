@@ -19,7 +19,7 @@ enum State {
   DEAD,
 };
 
-enum State currentState = State::IDLE;
+enum State currentState;
 
 Animate petAnimation(&Game::display);
 
@@ -157,6 +157,8 @@ void refreshState() {
 void init() {
   if (isDead()) {
     currentState = State::IDLE;
+  } else if (isSleeping()) {
+    setState(State::SLEEPING);
   }
 
   refreshState();
