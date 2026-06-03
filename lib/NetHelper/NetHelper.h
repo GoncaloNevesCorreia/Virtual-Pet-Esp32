@@ -2,25 +2,31 @@
 #define WIFI_HELPER_H
 
 #include <Arduino.h>
+#include <Preferences.h>
 #include <PubSubClient.h>
 #include <Timer.h>
 #include <WiFi.h>
 
 class NetHelper {
  private:
-  typedef void (*onConnected)();
+  typedef void (*onConnectedWifi)(String ssid, String password);
+  typedef void (*onConnectedMQTT)();
 
   Timer _mqttReconnectionTimer;
+  Preferences prefs;
 
   String _ssid;
   String _password;
+
+  onConnectedWifi _onWifiConnectedCB;
   bool _wifiConnected = false;
 
   PubSubClient* _client = nullptr;
 
   String _mqtt_server;
   String _UUID;
-  onConnected _onMQTTConnectedCB;
+
+  onConnectedMQTT _onMQTTConnectedCB;
   bool _mqttConnected = false;
 
   void onWifiConnected(WiFiEvent_t event, WiFiEventInfo_t info);
@@ -34,9 +40,9 @@ class NetHelper {
  public:
   NetHelper() : _mqttReconnectionTimer(5000) {}
 
-  void setupWifi(String ssid, String password);
+  void setupWifi(String ssid, String password, onConnectedWifi callback);
 
-  void setupMQTT(PubSubClient* client, String mqtt_server, onConnected callback);
+  void setupMQTT(PubSubClient* client, String mqtt_server, onConnectedMQTT callback);
 
   bool isOnline();
 

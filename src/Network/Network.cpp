@@ -13,8 +13,8 @@ namespace Network {
 // Data sent to the WebServer
 #define TOPIC_STATS "virtual_pet/stats"
 
-String ssid = SECRET_SSID;
-String password = SECRET_PASS;
+String ssid = "";
+String password = "";
 
 String mqtt_server = SECRET_MQTT;
 
@@ -70,19 +70,42 @@ void onConnectedMQTT() {
   client.subscribe(TOPIC_GET_LATEST);
 }
 
+void onConnectedWifi(String ssid, String password) {
+  Storage::saveCredentials("ssid", ssid);
+  Storage::saveCredentials("pass", password);
+}
+
 void init() {
-  netHelper.setupWifi(ssid, password);
-  netHelper.setupMQTT(&client, mqtt_server, onConnectedMQTT);
+  ssid = Storage::loadCredentials("ssid");
+  password = Storage::loadCredentials("pass");
+
+  if (ssid.length() > 0) {
+    setupWifi(ssid, password);
+
+    setupMQTT(mqtt_server);
+  }
 
   client.setCallback(mqttCallback);
+
+  Web::init();
 }
 
 void loop() {
   netHelper.loop();
+
+  Web::loop();
 }
 
 bool isOnline() {
   return netHelper.isOnline();
+}
+
+void setupWifi(String ssid, String password) {
+  netHelper.setupWifi(ssid, password, onConnectedWifi);
+}
+
+void setupMQTT(String mqtt_server) {
+  netHelper.setupMQTT(&client, mqtt_server, onConnectedMQTT);
 }
 
 }  // namespace Network

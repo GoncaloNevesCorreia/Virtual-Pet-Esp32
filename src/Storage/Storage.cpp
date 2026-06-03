@@ -16,4 +16,12 @@ uint8_t load(const char* key) {
   return preferences.getUInt(key, 100);
 }
 
+void saveCredentials(const char* key, String value) {
+  preferences.putString(key, value);
+}
+
+String loadCredentials(const char* key) {
+  return preferences.getString(key);
+}
+
 }  // namespace Storage

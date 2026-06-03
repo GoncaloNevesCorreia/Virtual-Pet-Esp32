@@ -3,12 +3,18 @@
 
 #include <NetHelper.h>
 #include <PubSubClient.h>
+#include <WebServer.h>
 #include <WiFi.h>
 
 #include "Config.h"
 #include "Game/Game.h"
+#include "Web/Web.h"
 
 namespace Network {
+
+void setupWifi(String ssid, String password);
+
+void setupMQTT(String mqtt_server);
 
 void init();
 
