@@ -87,18 +87,21 @@ void NetHelper::reconnectMQTT() {
     if (_onMQTTConnectedCB != nullptr) _onMQTTConnectedCB(_mqtt_server);
 
   } else {
-    mqttReconnectionAttempts++;
-
-    if (mqttReconnectionAttempts >= 3) {
-      _mqttServerProvided = false;
-      _mqttConnected = false;
-      _mqtt_server = "";
-      return;
-    }
-
     Serial.print("failed, rc=");
     Serial.print(_client->state());
     Serial.println(" try again in 5 seconds");
+
+    mqttReconnectionAttempts++;
+
+    if (mqttReconnectionAttempts >= MAX_RECONNECTION_ATTEMPTS) {
+      _mqttServerProvided = false;
+      _mqttConnected = false;
+      _mqtt_server = "";
+    }
+
+    Serial.print("Failed ");
+    Serial.print(MAX_RECONNECTION_ATTEMPTS);
+    Serial.println(" times, while trying to connect to the MQTT Broker. Please check configuration.");
   }
 }
 
