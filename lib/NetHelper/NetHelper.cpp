@@ -41,12 +41,6 @@ void NetHelper::onWiFiGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
   if (_onWifiConnectedCB != nullptr) {
     _onWifiConnectedCB(_ssid, _password);
   }
-
-  if (!_client->connected()) {
-    _mqttReconnectionTimer.reset();
-    _mqttConnected = false;
-    reconnectMQTT();
-  }
 }
 
 void NetHelper::onWiFiDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
