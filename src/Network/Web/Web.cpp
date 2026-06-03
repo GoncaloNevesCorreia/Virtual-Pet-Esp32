@@ -72,33 +72,105 @@ String getStatusHtml() {
 
 String getPage() {
   return R"rawliteral(
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ESP32 WiFi Setup</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 24px; }
-    input { display: block; width: 100%; max-width: 320px; margin: 8px 0 16px; padding: 8px; }
-    button { padding: 10px 16px; }
-  </style>
-</head>
-<body>
-  <h1>ESP32 WiFi Setup</h1>
-)rawliteral" +
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ESP32 WiFi / MQTT Setup</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      p {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+      }
+
+      input {
+        display: block;
+        width: 100%;
+        min-width: 300px;
+        margin: 8px 0 16px;
+        padding: 8px;
+      }
+
+      button {
+        padding: 8px 1em;
+        width: 100%;
+        cursor: pointer;
+      }
+
+      .password-field {
+        position: relative;
+      }
+
+      .password-field button {
+        position: absolute;
+        width: auto;
+        top: 50%;
+        left: 100%;
+        transform: translate(-100%, -50%);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ESP32 WiFi / MQTT Setup</h1>
+    <main>
+    )rawliteral" +
          getStatusHtml() + R"rawliteral(
   <form method="POST" action="/save">
-    <label>WiFi SSID</label>
-    <input name="ssid" required>
+        <label for="ssid">WiFi SSID</label>
+        <input id="ssid" name="ssid" required />
 
-    <label>WiFi Password</label>
-    <input name="pass" type="password">
-    
-    <label>MQTT Broker</label>
-    <input name="mqtt_server" required>
+        <label for="pass">WiFi Password</label>
 
-    <button type="submit">Connect</button>
-  </form>
+        <div class="password-field">
+          <input id="pass" name="pass" type="password" />
+          <button type="button">Show</button>
+        </div>
+
+        <label for="mqtt">MQTT Broker</label>
+        <input id="mqtt" name="mqtt_server" required />
+
+        <button type="submit">Connect</button>
+      </form>
+    </main>
+
+    <script type="text/javascript">
+      const passToggle = document.querySelector(".password-field button");
+      passToggle.addEventListener("click", (e) => {
+        const el = e.target;
+
+        const input = el.parentNode.firstElementChild;
+
+        console.log(input);
+
+        if (input.type === "password") {
+          input.type = "text";
+          el.textContent = "Hide";
+        } else {
+          input.type = "password";
+          el.textContent = "Show";
+        }
+      });
+    </script>
 </body>
 </html>
 )rawliteral";
