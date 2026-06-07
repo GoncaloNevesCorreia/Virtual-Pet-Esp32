@@ -3,15 +3,15 @@
 namespace Pet {
 
 enum State {
-  HAPPY,  // TODO
+  HAPPY,
   IDLE,
-  SAD,  // TODO
+  SAD,
   PLAYING,
 
-  HUNGRY,  // TODO
+  HUNGRY,
   EATING,
 
-  TIRED,  // TODO
+  TIRED,
   FALLING_ASLEEP,
   SLEEPING,
   WAKING_UP,
@@ -112,7 +112,7 @@ void updateAnimation() {
 }
 
 void setState(enum State state) {
-  if (currentState == state) return;
+  if (currentState == state && petAnimation.hasAnimation()) return;
 
   currentState = state;
 
@@ -156,7 +156,7 @@ void refreshState() {
 
 void init() {
   if (isDead()) {
-    currentState = State::IDLE;
+    setState(State::HAPPY);
   } else if (isSleeping()) {
     setState(State::SLEEPING);
   }

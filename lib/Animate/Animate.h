@@ -38,6 +38,8 @@ class Animate {
  public:
   Animate(Adafruit_SSD1306* display) : _display(display) {}
 
+  bool hasAnimation();
+
   void set(const Animation* animation);
 
   void draw();

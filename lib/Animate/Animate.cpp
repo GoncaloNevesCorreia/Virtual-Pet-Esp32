@@ -38,6 +38,10 @@ void Animate::draw() {
   updateFrame();
 }
 
+bool Animate::hasAnimation() {
+  return _animation != nullptr;
+}
+
 void Animate::onEnd(OnAnimationEnd callback) {
   _onEndCallback = callback;
 }
