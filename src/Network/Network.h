@@ -1,7 +1,7 @@
 #ifndef NETWORK_H
 #define NETWORK_H
 
-#include <NetHelper.h>
+#include <NetworkHelper.h>
 #include <PubSubClient.h>
 #include <WebServer.h>
 #include <WiFi.h>

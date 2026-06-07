@@ -71,7 +71,7 @@ String getStatusHtml() {
 }
 
 String getPage() {
-  return R"rawliteral(
+  return R"html(
 <!doctype html>
 <html>
   <head>
@@ -133,8 +133,9 @@ String getPage() {
   <body>
     <h1>ESP32 WiFi / MQTT Setup</h1>
     <main>
-    )rawliteral" +
-         getStatusHtml() + R"rawliteral(
+    )html" +
+         getStatusHtml() +
+         R"html(
   <form method="POST" action="/save">
         <label for="ssid">WiFi SSID</label>
         <input id="ssid" name="ssid" required />
@@ -173,7 +174,7 @@ String getPage() {
     </script>
 </body>
 </html>
-)rawliteral";
+)html";
 }
 
 void handleRoot() {

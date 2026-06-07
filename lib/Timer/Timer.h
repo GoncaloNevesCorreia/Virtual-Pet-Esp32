@@ -8,13 +8,13 @@
 class Timer {
  private:
   unsigned long _lastTime = 0;
-  uint16_t _interval;
+  int _interval;
   std::function<void()> _callback;
 
  public:
   Timer() {};
-  Timer(uint16_t interval) : _interval(interval) {};
-  Timer(TIMER_CALLBACK_SIGNATURE, uint16_t interval) : _callback(callback), _interval(interval) {};
+  Timer(int interval) : _interval(interval) {};
+  Timer(TIMER_CALLBACK_SIGNATURE, int interval) : _callback(callback), _interval(interval) {};
 
   void run();
 
@@ -22,7 +22,7 @@ class Timer {
 
   void setCallback(TIMER_CALLBACK_SIGNATURE);
 
-  void setInterval(uint16_t interval);
+  void setInterval(int interval);
 };
 
 #endif

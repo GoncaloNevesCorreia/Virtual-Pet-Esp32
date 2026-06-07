@@ -15,7 +15,7 @@ namespace Network {
 
 WiFiClient espClient;
 PubSubClient client(espClient);
-NetHelper netHelper;
+NetworkHelper networkHelper;
 
 void mqttCallback(char* topic, byte* message, unsigned int length) {
   Serial.println(topic);
@@ -42,7 +42,7 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
 }
 
 void sendStats() {
-  if (!netHelper.isOnline()) return;
+  if (!networkHelper.isOnline()) return;
 
   uint8_t stats[5];
 
@@ -58,18 +58,18 @@ void sendStats() {
   client.publish(TOPIC_STATS, stats, sizeof(stats));
 }
 
+void onConnectedWifi(String ssid, String password) {
+  Storage::saveCredentials("ssid", ssid);
+  Storage::saveCredentials("pass", password);
+}
+
 void onConnectedMQTT(String mqtt_server) {
+  Storage::saveCredentials("mqtt_server", mqtt_server);
+
   client.subscribe(TOPIC_EAT);
   client.subscribe(TOPIC_PLAY);
   client.subscribe(TOPIC_SLEEP);
   client.subscribe(TOPIC_GET_LATEST);
-
-  Storage::saveCredentials("mqtt_server", mqtt_server);
-}
-
-void onConnectedWifi(String _ssid, String _password) {
-  Storage::saveCredentials("ssid", _ssid);
-  Storage::saveCredentials("pass", _password);
 }
 
 void init() {
@@ -81,8 +81,9 @@ void init() {
   if (ssid.length() > 0) {
     setupWifi(ssid, password);
 
-    if (mqtt_server.length() > 0)
+    if (mqtt_server.length() > 0) {
       setupMQTT(mqtt_server);
+    }
   }
 
   client.setCallback(mqttCallback);
@@ -91,21 +92,21 @@ void init() {
 }
 
 void loop() {
-  netHelper.loop();
+  networkHelper.loop();
 
   Web::loop();
 }
 
 bool isOnline() {
-  return netHelper.isOnline();
+  return networkHelper.isOnline();
 }
 
 void setupWifi(String ssid, String password) {
-  netHelper.setupWifi(ssid, password, onConnectedWifi);
+  networkHelper.setupWifi(ssid, password, onConnectedWifi);
 }
 
 void setupMQTT(String mqtt_server) {
-  netHelper.setupMQTT(&client, mqtt_server, onConnectedMQTT);
+  networkHelper.setupMQTT(&client, mqtt_server, onConnectedMQTT);
 }
 
 }  // namespace Network

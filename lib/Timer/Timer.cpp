@@ -22,7 +22,7 @@ void Timer::setCallback(TIMER_CALLBACK_SIGNATURE) {
   _callback = callback;
 }
 
-void Timer::setInterval(uint16_t interval) {
+void Timer::setInterval(int interval) {
   _interval = interval;
 
   reset();

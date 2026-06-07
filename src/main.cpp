@@ -1,6 +1,6 @@
 // Slows down code to improve wokwi simulation
-// and adds testing Network credentials to Storage
-#define DEBUG
+// and adds Wokwi Network credentials to Storage
+// #define WOKWI
 
 // Disables Network Functionality
 // #define OFFLINE
@@ -14,7 +14,7 @@
 void setup() {
   Serial.begin(115200);
 
-#ifdef DEBUG
+#ifdef WOKWI
   Serial.print("Flash size: ");
   Serial.print(ESP.getFlashChipSize());
   Serial.println(" bytes");
@@ -35,7 +35,7 @@ void setup() {
 
 #ifndef OFFLINE
 
-#ifdef DEBUG
+#ifdef WOKWI
   Storage::saveCredentials("ssid", "Wokwi-GUEST");
   Storage::saveCredentials("pass", "");
   Storage::saveCredentials("mqtt_server", "host.wokwi.internal");
@@ -48,7 +48,7 @@ void setup() {
 }
 
 void loop() {
-#ifdef DEBUG
+#ifdef WOKWI
   delay(1);
 #endif
 
