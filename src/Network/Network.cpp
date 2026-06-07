@@ -48,13 +48,6 @@ void sendStats() {
 
   Game::getStats(stats);
 
-  Serial.print("Sending Stats: ");
-  Serial.print(stats[0]);
-  Serial.print(stats[1]);
-  Serial.print(stats[2]);
-  Serial.print(stats[3]);
-  Serial.println(stats[4]);
-
   client.publish(TOPIC_STATS, stats, sizeof(stats));
 }
 

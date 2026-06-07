@@ -50,5 +50,6 @@ void NetworkHelper::onWiFiDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) 
   Serial.print("WiFi lost connection. Reason: ");
   Serial.println(info.wifi_sta_disconnected.reason);
   Serial.println("Trying to Reconnect");
+
   WiFi.begin(_ssid.c_str(), _password.c_str());
 }

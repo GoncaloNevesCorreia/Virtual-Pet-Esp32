@@ -23,6 +23,7 @@ void handleSave();
 void handleCaptivePortal();
 
 void init() {
+#ifndef WOKWI
   WiFi.mode(WIFI_AP_STA);
 
   // Configure ESP32 AP IP
@@ -37,23 +38,47 @@ void init() {
 
   // Captive portal DNS: redirect all domains to ESP32 AP IP
   dnsServer.start(DNS_PORT, "*", apIP);
+#endif
 
   // Web routes
   server.on("/", HTTP_GET, handleRoot);
   server.on("/save", HTTP_POST, handleSave);
+  server.on("/favicon.ico", HTTP_GET, []() {
+    server.send(204);  // No Content
+  });
+  server.on("/.well-known/appspecific/com.chrome.devtools.json", HTTP_GET, []() {
+    server.send(204);  // No Content
+  });
 
+#ifndef WOKWI
   server.on("/generate_204", HTTP_GET, handleRoot);         // Android
   server.on("/fwlink", HTTP_GET, handleRoot);               // Windows
   server.on("/hotspot-detect.html", HTTP_GET, handleRoot);  // Apple
-
   server.onNotFound(handleCaptivePortal);
+#else
+  server.onNotFound([]() {
+    Serial.print("404: ");
+    Serial.print(server.method() == HTTP_GET ? "GET " : "POST ");
+    Serial.println(server.uri());
+
+    handleRoot();
+  });
+#endif
 
   server.begin();
+
+#ifdef WOKWI
+  Serial.println("Web Server Online: http://localhost:8081");
+#else
   Serial.println("Captive Portal Online.");
+#endif
 }
 
 void loop() {
+#ifndef WOKWI
   dnsServer.processNextRequest();
+#endif
+
   server.handleClient();
 }
 

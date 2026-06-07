@@ -49,7 +49,8 @@ void setup() {
 
 void loop() {
 #ifdef WOKWI
-  delay(1);
+  // https://docs.wokwi.com/faq#the-simulation-is-slow-how-can-i-make-it-faster
+  delay(10);
 #endif
 
 #ifndef OFFLINE
